@@ -1,8 +1,18 @@
 import { sleep } from "bun";
-import { basename } from "node:path"
 
+/**
+ * States for a job to be in.
+ */
 export type ComfyJob_Status = "building" | "queued" | "running" | "completed" | "failed" | "cancelled"
 
+/**
+ * Possible resource types in ComfyUI
+ */
+export type ComfyResType = 'input' | 'output' | 'temp'  //TODO: check if this is correct and exhaustive.
+
+/**
+ * A job instance to be deployed on a comfyui server.
+ */
 export class ComfyJob {
     #parent?: ComfyClient
     #uid?: string
@@ -14,21 +24,45 @@ export class ComfyJob {
     #workflow: unknown
     #errors: unknown;
 
+    /**
+     * The unique id of this job. Undefined if not queued yet.
+     */
     get uid() { return this.#uid }
+    /**
+     * The target client. Undefined if not queued yet.
+     */
     get parent() { return this.#parent }
     get status() { return this.#status }
     get errors() { return this.#errors }
 
+    /**
+     * Build a new job object detached from any specific client.
+     * @param wk final json of the promt to send to the backend.
+     */
     constructor(wk: unknown) {
         this.#workflow = wk
     }
 
+    /**
+     * Use the current json to generate a new promt.
+     * @returns A copy of the current workflow, ready to be queued.
+     */
     clone() {
         const tmp = new ComfyJob({})
         tmp.#workflow = this.#workflow
         return tmp;
     }
 
+    /**
+     * 
+     * @param parent The client onto which this job will be queued.
+     * @param callbacks Callbacks for each supported event during any job's lifecycle.
+     * @param callbacks.onCompleted Run right after a job is set for completion.
+     * @param callbacks.onCancelled Run right after a job is determined to be cancelled.'
+     * @param callbacks.onError Run right after an error is detected within a job execution.
+     * @param callbacks.onUpdate Run right after a partial result from a job is gathered.
+     * @returns this object.
+     */
     async queue(parent: ComfyClient, callbacks: {
         onCompleted?: (obj: ComfyJob) => void | Promise<void>,
         onCancelled?: (obj: ComfyJob) => void | Promise<void>,
@@ -83,13 +117,18 @@ export class ComfyJob {
         }
     }
 
+    /**
+     * Cancel this job, regardless of its current progression.
+     */
     async cancel() {
         if (['cancelled', 'failed', 'completed', 'building'].includes(this.#status)) return;    //Ignore deletion for these cases
         const tmp = await this.#parent!.delete_queue_entries([this.#uid!])
     }
 }
 
-
+/**
+ * A comfyui client, exposing all its REST endpoints.
+ */
 export class ComfyClient {
     #endpoint: string;
     #secure: boolean;
@@ -103,6 +142,12 @@ export class ComfyClient {
     get running() { return this.#running }
     get uid() { return this.#uid }
 
+    /**
+     * 
+     * @param endpoint The location of the endpoint.
+     * @param param1.debug If true it shows additional debugging output.
+     * @param param1.secure If true it use https and wss in place of the not encrypted versions.
+     */
     constructor(endpoint: string, {
         debug = false,
         secure = false,
@@ -160,11 +205,15 @@ export class ComfyClient {
         });
     }
 
+    /**
+     * Manually closes the current connection. Usually not needed if the client is defined with the keyword `using`.
+     */
     close() {
         this.#socket.close()
         this.#running = false;
     }
 
+    //Destructor
     [Symbol.dispose] = () => this.close()
 
     registerExecutingCallback(job: ComfyJob, cb: { onCompleted: (obj: ComfyJob) => void | Promise<void>, onCancelled: (obj: ComfyJob) => void | Promise<void>, onUpdate: (obj: ComfyJob, node: number) => void | Promise<void>, onError: (obj: ComfyJob, errors: unknown) => void | Promise<void> }) {
@@ -175,6 +224,9 @@ export class ComfyClient {
         this.#jobs.delete(job.uid!)
     }
 
+    /**
+     * @returns System stats from ComfyUI
+     */
     async system_stats() {
         return await (
             await fetch(
@@ -186,6 +238,9 @@ export class ComfyClient {
         ).json()
     }
 
+    /**
+     * @returns Available embeddings from ComfyUI
+     */
     async embeddings() {
         return await (
             await fetch(
@@ -197,6 +252,9 @@ export class ComfyClient {
         ).json()
     }
 
+    /**
+     * @returns Listing all extensions installed on a ComfyUI instance
+     */
     async extensions() {
         return await (
             await fetch(
@@ -208,11 +266,19 @@ export class ComfyClient {
         ).json()
     }
 
+    /**
+     * 
+     * @param content 
+     * @param opts.overwrite 
+     * @param opts.subfolder 
+     * @param opts.type 
+     * @returns 
+     */
     async upload_image(content: Blob,
         opts: {
             overwrite?: boolean,
             subfolder?: string,
-            type?: string
+            type?: ComfyResType //TODO: check
         } = {}) {
         const form = new FormData()
         if (opts.overwrite === true) form.set("overwrite", "true");
@@ -423,7 +489,7 @@ export class ComfyClient {
         if (tmp.ok) {
             for (const [key, value] of this.#jobs) {
                 //Make sure all current jobs are going to error out if not completed already
-                await value.onError(value.job, [])  
+                await value.onError(value.job, [])
             }
             return await tmp.json();
         }
@@ -443,7 +509,7 @@ export class ComfyClient {
         if (tmp.ok) {
             for (const [key, value] of this.#jobs) {
                 //Make sure all current jobs filtered are going to error out if not completed already
-                if (entries.includes(key)) await value.onError(value.job, []); 
+                if (entries.includes(key)) await value.onError(value.job, []);
             }
             return await tmp.json();
         }
