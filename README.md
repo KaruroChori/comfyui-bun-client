@@ -10,18 +10,17 @@ It offers a mostly 1-to-1 match with the existing interface, but I added some en
 - for the sake of clarity deletions on the queue and history have been split in multiple functions;
 - jobs are handled as abstract entities, with custom callbacks for updates, errors or completion.
 
-At the moment there is no _workflow builder_ provided, but it is under development.  
-To see how the library can be used, please check the example provided in `./examples/`.
+At the moment there is no _workflow builder_ provided, but it is under development.
 
 ## Quick start
 
 Add the dependency to your project:
 
-```
+```bash
 bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.1.0-alpha
 ```
 
-```
+```ts
 import {ComfyClient} from "comfyui-bun-client"
 {
     //Variable with a scope-contrained lifetime
@@ -29,3 +28,5 @@ import {ComfyClient} from "comfyui-bun-client"
     console.log(await client.system_stats())
 }
 ```
+
+To see how the library can be used in a more comprehensive manner, please check the example provided in `./examples/`.
