@@ -17,7 +17,7 @@ At the moment there is no _workflow builder_ provided, but it is under developme
 Add the dependency to your project:
 
 ```bash
-bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.1.0-alpha
+bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.1.1
 ```
 
 ```ts
