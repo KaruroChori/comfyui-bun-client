@@ -1,5 +1,5 @@
 {
-  "name": "comfyui-bun-runtime",
+  "name": "comfyui-bun-client",
   "module": "index.ts",
   "type": "module",
   "license": "MIT",
