@@ -278,7 +278,7 @@ export class ComfyClient {
         opts: {
             overwrite?: boolean,
             subfolder?: string,
-            type?: ComfyResType //TODO: check
+            type?: ComfyResType
         } = {}) {
         const form = new FormData()
         if (opts.overwrite === true) form.set("overwrite", "true");
@@ -303,7 +303,7 @@ export class ComfyClient {
         opts: {
             overwrite?: boolean,
             subfolder?: string,
-            type?: string,
+            type?: ComfyResType
             original_ref?: string
         } = {}) {
         const form = new FormData()
