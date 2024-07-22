@@ -12,3 +12,20 @@ It offers a mostly 1-to-1 match with the existing interface, but I added some en
 
 At the moment there is no _workflow builder_ provided, but it is under development.  
 To see how the library can be used, please check the example provided in `./examples/`.
+
+## Quick start
+
+Add the dependency to your project:
+
+```
+bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.1.0-alpha
+```
+
+```
+import {ComfyClient} from "comfyui-bun-client"
+{
+    //Variable with a scope-contrained lifetime
+    using client = new ComfyClient(process.env.COMFY ?? 'localhost:8188', { debug: true })
+    console.log(await client.system_stats())
+}
+```
