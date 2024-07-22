@@ -1,12 +1,11 @@
 import { basename } from "node:path"
 
-export function BunFileToFile(theBlob: Blob): File {
+export function BunFileToFile(blob: Blob): File {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    const b: any = theBlob;
-    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+    const b: any = blob;
+    //Fix missing field.
     b.lastModifiedDate = new Date();
-    b.name = basename(theBlob.name);
+    b.name = basename(blob.name);
 
-    //Cast to a File() type
-    return theBlob as File;
+    return blob as File;
 }
