@@ -1,0 +1,20 @@
+{
+  "name": "comfyui-bun-runtime",
+  "module": "index.ts",
+  "type": "module",
+  "license": "MIT",
+  "description": "Wrapper for the REST endpoints of a comfyui instance & some quality of life utils.",
+  "author": {
+    "name": "karurochari",
+    "url": "https://karurochari.com"
+  },
+  "engines": {
+    "bun": "1.1.18"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.6"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
