@@ -84,7 +84,6 @@ import { BunFileToFile, ComfyClient, ComfyJob } from '../index'
             );
         }
         console.log('Prompt 2 done!')
-
     }
     catch (e) {
         console.log(e)
