@@ -268,10 +268,10 @@ export class ComfyClient {
 
     /**
      * 
-     * @param content 
-     * @param opts.overwrite 
-     * @param opts.subfolder 
-     * @param opts.type 
+     * @param content A blob containing the image binary to be uploaded
+     * @param opts.overwrite If true, it overwrites the resource (it defaults to false)
+     * @param opts.subfolder If set, it determines a subfolder where to place the image
+     * @param opts.type It determine the resource types, like temporary, input or output
      * @returns 
      */
     async upload_image(content: Blob,
@@ -299,6 +299,14 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * 
+     * @param content A blob containing the mask binary to be uploaded
+     * @param opts.overwrite If true, it overwrites the resource (it defaults to false)
+     * @param opts.subfolder If set, it determines a subfolder where to place the image
+     * @param opts.type It determine the resource types, like temporary, input or output
+     * @returns 
+     */
     async upload_mask(content: Blob,
         opts: {
             overwrite?: boolean,
@@ -324,17 +332,30 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
-    async view(filename: string, opts: { subfolder?: string, channel?: 'rgba' | 'rgb' | 'a', format?: 'jpg' | 'png' | 'webp', quality?: number } = {}) {
+    /**
+     * Retrieve a file from the ComfyUI backend or it provides a preview for images.
+     * @param filename The target file name
+     * @param opts.subfolder Subfolder where it is located.
+     * @param opts.type It determine the resource types, like temporary, input or output
+     * @param opts.channel For images, limit the result to some channels
+     * @param opts.format For images, set the preview format. If left empty the full file will be requested.
+     * @param opts.format For images, quality to determine the compression level in case a preview is requested.
+     * @returns The blob with the image content.
+     */
+    async view(filename: string, opts: { type?: ComfyResType, subfolder?: string, channel?: 'rgba' | 'rgb' | 'a', format?: 'jpg' | 'png' | 'webp', quality?: number } = {}) {
         const tmp =
             await fetch(
                 `http${this.#secure ? "s" : ""}://${this.#endpoint}/view?${new URLSearchParams({
                     clientId: this.#uid,
                     filename: filename,
-                    ...opts.subfolder ? { subfolder: opts.subfolder } : {},
-                    ...opts.format ? {
-                        preview: `${opts.format}${opts.quality ? `;${opts.quality}` : ''}`
-                    } : {},
-                    ...opts.channel ? { channel: opts.channel } : {}
+                    ...(opts.subfolder ? { subfolder: opts.subfolder } : {}),
+                    ...(opts.format
+                        ? {
+                            preview: `${opts.format}${opts.quality ? `;${opts.quality}` : undefined}`,
+                        }
+                        : {}),
+                    ...(opts.channel ? { channel: opts.channel } : {}),
+                    ...(opts.type ? { type: opts.type } : {})
                 }).toString()}`,
                 { method: "GET" },
             )
@@ -345,6 +366,12 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * 
+     * @param folder Location of the file
+     * @param filename Name of the file
+     * @returns The metadata associated to a given `safetensors` file.
+     */
     async view_metadata(folder: string, filename: string) {
         const tmp =
             await fetch(
@@ -361,6 +388,11 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * Information about the supported node types by a specific ComfyUI instance.
+     * @param subclass If not set a full list is returned, otherwise it will end up being filtered.
+     * @returns JSON with all the schema details.
+     */
     async object_info(subclass?: string) {
         const tmp = (
             await fetch(
@@ -377,6 +409,9 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * It stops the execution of the current job.
+     */
     async interrupt() {
         const tmp = (
             await fetch(
@@ -393,6 +428,11 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * It frees resources on the backend.
+     * @param opts.unload_models If true, models will be unloaded.
+     * @param opts.free_memory If true, memory will be freed.
+     */
     async free(opts: { unload_models?: boolean, free_memory?: boolean }) {
         const tmp = (
             await fetch(
@@ -556,3 +596,9 @@ export class ComfyClient {
 
 }
 
+/**
+ * More evolved version of ComfyJob, capable of automatically handling the initial setup of resources needed for the workflow, and the later collection of artifacts from it.
+ */
+export class ComfySmartJob {
+    constructor(inputs: Record<string, string>, outputs: Record<string, string>, outdir: string, workflow: unknown) { }
+}
