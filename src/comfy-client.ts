@@ -600,5 +600,7 @@ export class ComfyClient {
  * More evolved version of ComfyJob, capable of automatically handling the initial setup of resources needed for the workflow, and the later collection of artifacts from it.
  */
 export class ComfySmartJob {
-    constructor(inputs: Record<string, string>, outputs: Record<string, string>, outdir: string, workflow: unknown) { }
+    constructor(inputs: Record<string, string>, outputs: Record<string, string>, outdir: string, workflow: unknown) {
+
+    }
 }

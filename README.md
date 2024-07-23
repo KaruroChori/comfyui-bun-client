@@ -1,7 +1,7 @@
 # Comfyui client for bun
 
 > [!IMPORTANT]  
-> This library can only be used with typescript as I did not bother to transpile it and on the [bun](https://bun.sh/) runtime.  
+> This library can only be used with typescript, as I did not bother to transpile it, and on the [bun](https://bun.sh/) runtime.  
 > It is trivial to extend or adapt it to work with other runtimes, but it is not currently planned.
 
 A simple typescript wrapper compatible with [comfyui](https://github.com/comfyanonymous/ComfyUI) REST endpoints.  
