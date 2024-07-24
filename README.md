@@ -1,10 +1,9 @@
 # ComfyUI client for bun
 
 > [!IMPORTANT]  
-> Please read this disclaimer before using this library!
->
-> - It can only be used with typescript: features like the **workflow builder** would make no sense in javascript, so I did not bother to partially transpile it.
-> - It is based on the [bun](https://bun.sh/) runtime, so you will not be able to use it out of the box with node or deno.
+> Please, be mindful that this library is specifically designed to only work with typescript and on the [bun](https://bun.sh/).
+> Porting it to other runtimes is mostly trivial, however there is no plan for that.
+> There is no pure javascript package as many of the advanced features like the **workflow builder** would make no sense.
 
 This library offers several tools to interface with [comfyui](https://github.com/comfyanonymous/ComfyUI) instances from typescript.  
 It consists of:

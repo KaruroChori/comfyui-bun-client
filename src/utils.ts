@@ -11,6 +11,8 @@ export function BunFileToFile(blob: Blob): File {
     return blob as File;
 }
 
+//TODO: Make sure the generated code is based on escaped variables. At this point, symbols like `'` or `"` in several of the json fields would result in generation bugs.
+
 /**
  * @param cfg The original comfy json
  * @returns A normalized version, since the original is awful
@@ -61,7 +63,7 @@ function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
             else return type;
         }
         else {
-            if (type.length !== 0) return type.map(x => `"${x}"`).join('|')
+            if (type.length !== 0) return type.map(x => `'${x}'`).join('|')
             else return 'void';
         }
     }
