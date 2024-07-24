@@ -148,12 +148,12 @@ export class ComfyClient {
      * @param param1.debug If true it shows additional debugging output.
      * @param param1.secure If true it use https and wss in place of the not encrypted versions.
      */
-    constructor(endpoint: string, {
-        debug = false,
-        secure = false,
+    constructor(endpoint: string, opts: { debug?: boolean, secure?: boolean } = {
+        debug: false,
+        secure: false,
     }) {
-        this.#debug = debug
-        this.#secure = secure
+        this.#debug = opts.debug ?? false
+        this.#secure = opts.secure ?? false;
         this.#endpoint = endpoint
         this.#socket = new WebSocket(`ws${this.#secure ? 's' : ''}://${this.#endpoint}/ws?${new URLSearchParams({
             clientId: this.#uid,
@@ -165,8 +165,8 @@ export class ComfyClient {
             if (event.type === "message") {
                 const data = JSON.parse(event.data);
                 if (data.type === "status") {
-                    console.log('Status')
-                    console.log(data.data);
+                    if (this.#debug) console.log("Status");
+                    if (this.#debug) console.log(data.data);
                 } else if (data.type === "executing") {
                     console.log('Executing')
                     //Last execution for the prompt

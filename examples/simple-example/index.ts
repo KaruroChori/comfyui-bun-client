@@ -1,5 +1,5 @@
 import { sleep } from 'bun'
-import { BunFileToFile, ComfyClient, ComfyJSONToTypescript, ComfyJob } from '../index'
+import { BunFileToFile, ComfyClient, ComfyJSONToTypescript, ComfyJob } from '../../index'
 
 {
     //Variable with a scope-contrained lifetime
@@ -9,7 +9,7 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript, ComfyJob } from '../
         client_id: client.uid,
         extra_data: {
             extra_pnginfo: {
-                workflow: (await import('./example-a.json')).default
+                workflow: (await import('./workflow.json')).default
             }
         },
         "prompt": {
@@ -25,7 +25,7 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript, ComfyJob } from '../
             "2": {
                 "class_type": "LoadImage",
                 "inputs": {
-                    "image": "example-a.png",
+                    "image": "asset.png",
                     "upload": "image"
                 }
             }

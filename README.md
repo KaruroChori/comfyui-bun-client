@@ -14,9 +14,9 @@ It consists of:
 
 ## Quick start
 
-Add the dependency to your project:
+Add the dependency for this library to your project (make sure to select the proper version):
 
-```bash
+```sh
 bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.1.1
 ```
 
@@ -35,8 +35,12 @@ To see how the library can be used in a more comprehensive manner, please check 
 
 ### Run a full sequence of jobs
 
-To be written
+[Check here.](./docs/run-jobs.md)
 
 ### Define a custom workflow in TS
 
-To be written
+[Check here.](./docs/custom-workflows.md)
+
+## For developers
+
+Please, follow the instructions [here](./docs/developers.md).

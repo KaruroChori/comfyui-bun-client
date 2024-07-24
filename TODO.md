@@ -1,10 +1,17 @@
-## Needed for next release
+## Needed for release 0.1.2
 
-- [ ] jsdoc on the source written so far
-- [ ] workflow builder
+- [ ] JSDOC for code which has been written so far
+- [ ] A minimal test suite
+
+## Needed for release 0.1.3
+
+- [ ] Utility functions to automatically collect artifacts and upload resources.
+
+## Needed for release 0.2.0
+
+- [ ] A complete workflow builder
   - [x] Get node info from the backend
   - [x] JSON preprocessing
-  - [x] code generation (static types)
-  - [ ] runtime compile operation
+  - [x] Code generation (static types)
+  - [ ] Runtime compile operation
   - [ ] Interpolation support
-- [ ] utils to automatically collect results post-job
