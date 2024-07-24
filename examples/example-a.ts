@@ -1,5 +1,5 @@
 import { sleep } from 'bun'
-import { BunFileToFile, ComfyClient, ComfyJob } from '../index'
+import { BunFileToFile, ComfyClient, ComfyJSONToTypescript, ComfyJob } from '../index'
 
 {
     //Variable with a scope-contrained lifetime
@@ -84,6 +84,8 @@ import { BunFileToFile, ComfyClient, ComfyJob } from '../index'
             );
         }
         console.log('Prompt 2 done!')
+
+        await ComfyJSONToTypescript(client, './interface.ts')
     }
     catch (e) {
         console.log(e)
