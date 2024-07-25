@@ -1,7 +1,7 @@
 ## Needed for release 0.1.2
 
 - [x] JSDOC for code which has been written so far
-- [ ] A minimal test suite
+- [x] A minimal test suite
 
 ## Needed for release 0.1.3
 

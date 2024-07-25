@@ -17,7 +17,7 @@ It consists of:
 Add the dependency for this library to your project (make sure to select the proper version):
 
 ```sh
-bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.1.1
+bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.1.2
 ```
 
 ### Minimal example
