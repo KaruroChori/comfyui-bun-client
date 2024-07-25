@@ -9,7 +9,7 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
         client_id: client.uid,
         extra_data: {
             extra_pnginfo: {
-                workflow: (await import('./workflow.json')).default
+                workflow: (await import('./workflow-a.json')).default
             }
         },
         "prompt": {
@@ -51,11 +51,11 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
                 {
                     onCompleted:
                         () => {
-                            console.log("Working on 1");
+                            console.log("Done with 1");
                         },
                     onUpdate:
                         () => {
-                            console.log("DONE with 1");
+                            console.log("Working on 1");
                         },
                     onError:
                         () => { },
@@ -66,21 +66,24 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
 
         console.log('Waiting for prompt 2 to submit')
         {
-            const wf = await client.schedule_job(PROMPT,
+            const wf = await client.schedule_job({ ...(await import("./workflow-b.json")).default, client_id: client.uid },
+
                 {
                     onCompleted:
                         () => {
-                            console.log("Working on 2");
+                            console.log("Done with 2");
                         },
                     onUpdate:
                         () => {
-                            console.log("DONE with 2");
+                            console.log("Working on 2");
                         },
                     onError:
                         () => { },
                 }
             );
+            await wf.completion()
         }
+
         console.log('Prompt 2 done!')
 
         await ComfyJSONToTypescript(client, './interface.ts')

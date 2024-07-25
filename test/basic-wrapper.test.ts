@@ -1,8 +1,12 @@
 import { expect, test } from "bun:test";
 import { ComfyClient } from "..";
 
+test("env-vars-ok", () => {
+    expect(process.env.COMFY).toBeDefined();
+});
+
 test("connect-comfy", async () => {
-    using client = new ComfyClient(process.env.COMFY ?? 'localhost:8188')
+    using client = new ComfyClient(process.env.COMFY!)
     const tmp = await client.system_stats()
     expect(tmp).toBeObject();
 });

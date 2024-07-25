@@ -1,6 +1,6 @@
 ## Needed for release 0.1.2
 
-- [ ] JSDOC for code which has been written so far
+- [x] JSDOC for code which has been written so far
 - [ ] A minimal test suite
 
 ## Needed for release 0.1.3

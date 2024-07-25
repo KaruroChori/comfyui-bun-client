@@ -57,17 +57,21 @@ export class ComfyClient {
         this.#socket.addEventListener("message", async (event) => {
             if (event.type === "message") {
                 const data = JSON.parse(event.data);
+
                 if (data.type === "status") {
                     if (this.#debug) console.log("Status");
                     if (this.#debug) console.log(data.data);
                 } else if (data.type === "executing") {
-                    console.log('Executing')
+                    if (this.#debug) console.log('Executing')
+                    if (this.#debug) console.log(data.data);
                     //Last execution for the prompt
                     const t = this.#jobs.get(data.data.prompt_id)
                     if (data.data.node === null && t) {
                         await t.onCompleted()
                     }
-                    console.log(data.data);
+                    else if (t) {
+                        await t.onUpdate(data.data.node)
+                    }
                 } else if (data.type === "crystools.monitor") {
                     //TODO: Ignore for now, based on an external extension
                 }
@@ -566,7 +570,7 @@ export class ComfyClient {
             //To await completion, collect the result and do something with it.
             async completion() {
                 while (true) {
-                    if (status === 'running') sleep(0)
+                    if (status === 'running' || status === 'queued') await sleep(0)
                     else break;
                 }
             },
