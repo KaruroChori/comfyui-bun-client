@@ -1,5 +1,5 @@
 import { sleep } from 'bun'
-import { BunFileToFile, ComfyClient, ComfyJSONToTypescript, ComfyJob } from '../../index'
+import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
 
 {
     //Variable with a scope-contrained lifetime
@@ -40,15 +40,14 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript, ComfyJob } from '../
 
     try {
         const file = BunFileToFile(
-            Bun.file("./example-a.png")
+            Bun.file("./asset.png")
         )
         await client.upload_image(file, { overwrite: true })
         //console.log(await client.view_metadata('checkpoints', 'animagineXLV3_v30.safetensors'))
 
         console.log('Waiting for prompt 1 to submit')
         {
-            const wf = await new ComfyJob(PROMPT).queue(
-                client,
+            const wf = await client.schedule_job(PROMPT,
                 {
                     onCompleted:
                         () => {
@@ -67,8 +66,7 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript, ComfyJob } from '../
 
         console.log('Waiting for prompt 2 to submit')
         {
-            const wf = await new ComfyJob(PROMPT).queue(
-                client,
+            const wf = await client.schedule_job(PROMPT,
                 {
                     onCompleted:
                         () => {

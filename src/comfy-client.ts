@@ -1,3 +1,7 @@
+/**
+ * Wrappers around the ComfyUI REST endopoints & related types.
+ */
+
 import { sleep } from "bun";
 
 /**
@@ -11,122 +15,6 @@ export type ComfyJob_Status = "building" | "queued" | "running" | "completed" | 
 export type ComfyResType = 'input' | 'output' | 'temp'  //TODO: check if this is correct and exhaustive.
 
 /**
- * A job instance to be deployed on a comfyui server.
- */
-export class ComfyJob {
-    #parent?: ComfyClient
-    #uid?: string
-    #status: ComfyJob_Status = "building"
-    #onCompleted?: (obj: ComfyJob) => void | Promise<void>
-    #onCancelled?: (obj: ComfyJob) => void | Promise<void>
-    #onUpdate?: (obj: ComfyJob, node: number) => void | Promise<void>
-    #onError?: (obj: ComfyJob, errors: unknown) => void | Promise<void>
-    #workflow: unknown
-    #errors: unknown;
-
-    /**
-     * The unique id of this job. Undefined if not queued yet.
-     */
-    get uid() { return this.#uid }
-    /**
-     * The target client. Undefined if not queued yet.
-     */
-    get parent() { return this.#parent }
-    get status() { return this.#status }
-    get errors() { return this.#errors }
-
-    /**
-     * Build a new job object detached from any specific client.
-     * @param wk final json of the promt to send to the backend.
-     */
-    constructor(wk: unknown) {
-        this.#workflow = wk
-    }
-
-    /**
-     * Use the current json to generate a new promt.
-     * @returns A copy of the current workflow, ready to be queued.
-     */
-    clone() {
-        const tmp = new ComfyJob({})
-        tmp.#workflow = this.#workflow
-        return tmp;
-    }
-
-    /**
-     * 
-     * @param parent The client onto which this job will be queued.
-     * @param callbacks Callbacks for each supported event during any job's lifecycle.
-     * @param callbacks.onCompleted Run right after a job is set for completion.
-     * @param callbacks.onCancelled Run right after a job is determined to be cancelled.'
-     * @param callbacks.onError Run right after an error is detected within a job execution.
-     * @param callbacks.onUpdate Run right after a partial result from a job is gathered.
-     * @returns this object.
-     */
-    async queue(parent: ComfyClient, callbacks: {
-        onCompleted?: (obj: ComfyJob) => void | Promise<void>,
-        onCancelled?: (obj: ComfyJob) => void | Promise<void>,
-        onUpdate?: (obj: ComfyJob, node: number) => void | Promise<void>,
-        onError?: (obj: ComfyJob, errors: unknown) => void | Promise<void>
-    }) {
-        if (this.#status !== 'building') throw Error('Cannot place a ComfyJob on queue twice. Consider cloning.')
-        this.#parent = parent
-        this.#onCompleted = callbacks.onCompleted
-        this.#onUpdate = callbacks.onUpdate
-        this.#onError = callbacks.onError
-
-
-        const tmp = await this.#parent.post_prompt(this.#workflow)
-        this.#status = 'queued'
-        this.#uid = tmp.prompt_id
-        if (Object.keys(tmp.node_errors).length !== 0) {
-            this.#status = 'failed'
-            if (this.#onError) await this.#onError(this, tmp.errors);
-        }
-        this.#parent.registerExecutingCallback(this, {
-            onCompleted: async (job) => {
-                this.#status = "completed";
-                this.#parent!.unregisterExecutingCallback(this);
-                if (callbacks.onCompleted) await callbacks.onCompleted(job);
-            },
-            onUpdate: async (job, node) => {
-                this.#status = "running";
-                if (callbacks.onUpdate) await callbacks.onUpdate(job, node);
-            },
-            onError: async (job, errors) => {
-                this.#status = "failed";
-                this.#parent!.unregisterExecutingCallback(this);
-                if (callbacks.onError) await callbacks.onError(job, errors);
-            },
-            onCancelled: async (job) => {
-                this.#status = "cancelled";
-                if (callbacks.onCancelled) await callbacks.onCancelled(job);
-            },
-        }
-        )
-
-        return this;
-    }
-
-    //TODO
-    //To await completion, collect the result and do something with it.
-    async completion() {
-        while (true) {
-            if (this.#status === 'running') sleep(0)
-            else break;
-        }
-    }
-
-    /**
-     * Cancel this job, regardless of its current progression.
-     */
-    async cancel() {
-        if (['cancelled', 'failed', 'completed', 'building'].includes(this.#status)) return;    //Ignore deletion for these cases
-        const tmp = await this.#parent!.delete_queue_entries([this.#uid!])
-    }
-}
-
-/**
  * A comfyui client, exposing all its REST endpoints.
  */
 export class ComfyClient {
@@ -137,7 +25,12 @@ export class ComfyClient {
     #running = false;
     #debug = false;
 
-    #jobs: Map<string, { job: ComfyJob, onCompleted: (obj: ComfyJob) => void | Promise<void>, onCancelled: (obj: ComfyJob) => void | Promise<void>, onUpdate: (obj: ComfyJob, node: number) => void | Promise<void>, onError: (obj: ComfyJob, errors: unknown) => void | Promise<void> }>
+    #jobs: Map<string, {
+        onCompleted: () => (void | Promise<void>),
+        onCancelled: () => (void | Promise<void>),
+        onUpdate: (node: number) => (void | Promise<void>),
+        onError: (errors: unknown) => (void | Promise<void>)
+    }>
 
     get running() { return this.#running }
     get uid() { return this.#uid }
@@ -172,7 +65,7 @@ export class ComfyClient {
                     //Last execution for the prompt
                     const t = this.#jobs.get(data.data.prompt_id)
                     if (data.data.node === null && t) {
-                        await t.onCompleted(t.job)
+                        await t.onCompleted()
                     }
                     console.log(data.data);
                 } else if (data.type === "crystools.monitor") {
@@ -215,14 +108,6 @@ export class ComfyClient {
 
     //Destructor
     [Symbol.dispose] = () => this.close()
-
-    registerExecutingCallback(job: ComfyJob, cb: { onCompleted: (obj: ComfyJob) => void | Promise<void>, onCancelled: (obj: ComfyJob) => void | Promise<void>, onUpdate: (obj: ComfyJob, node: number) => void | Promise<void>, onError: (obj: ComfyJob, errors: unknown) => void | Promise<void> }) {
-        this.#jobs.set(job.uid!, { job, ...cb })
-    }
-
-    unregisterExecutingCallback(job: ComfyJob) {
-        this.#jobs.delete(job.uid!)
-    }
 
     /**
      * @returns System stats from ComfyUI
@@ -529,7 +414,7 @@ export class ComfyClient {
         if (tmp.ok) {
             for (const [key, value] of this.#jobs) {
                 //Make sure all current jobs are going to error out if not completed already
-                await value.onError(value.job, [])
+                await value.onError([])
             }
             return await tmp.json();
         }
@@ -549,7 +434,7 @@ export class ComfyClient {
         if (tmp.ok) {
             for (const [key, value] of this.#jobs) {
                 //Make sure all current jobs filtered are going to error out if not completed already
-                if (entries.includes(key)) await value.onError(value.job, []);
+                if (entries.includes(key)) await value.onError([]);
             }
             return await tmp.json();
         }
@@ -592,7 +477,73 @@ export class ComfyClient {
     }
 
 
-    new_job(workflow: unknown, cfg: Record<string, unknown>) { }
+    async schedule_job(workflow: unknown, cb: {
+        onCompleted?: () => (void | Promise<void>)
+        onCancelled?: () => (void | Promise<void>)
+        onUpdate?: (node: number) => (void | Promise<void>)
+        onError?: (errors: unknown) => (void | Promise<void>)
+    }) {
+        let status: ComfyJob_Status = "building"
+        let errors: unknown;
+
+        const tmp = await this.post_prompt(workflow)
+        const uid = tmp.prompt_id
+
+        status = 'queued'
+
+        if (Object.keys(tmp.node_errors).length !== 0) {
+            status = 'failed'
+            if (cb.onError) await cb.onError(tmp.errors);
+        }
+        this.#jobs.set(uid, {
+            onCompleted: async () => {
+                status = "completed";
+                this.#jobs.delete(uid)
+                if (cb.onCompleted) await cb.onCompleted();
+            },
+            onUpdate: async (node) => {
+                status = "running";
+                if (cb.onUpdate) await cb.onUpdate(node);
+            },
+            onError: async (errors) => {
+                status = "failed";
+                this.#jobs.delete(uid)
+                if (cb.onError) await cb.onError(errors);
+            },
+            onCancelled: async () => {
+                status = "cancelled";
+                if (cb.onCancelled) await cb.onCancelled();
+            },
+        })
+
+        const parent = this;
+
+
+
+        return {
+            get uid() { return uid },
+            get status() { return status },
+            get errors() { return errors },
+
+
+            //TODO
+            //To await completion, collect the result and do something with it.
+            async completion() {
+                while (true) {
+                    if (status === 'running') sleep(0)
+                    else break;
+                }
+            },
+
+            /**
+             * Cancel this job, regardless of its current progression.
+             */
+            async cancel() {
+                if (['cancelled', 'failed', 'completed', 'building'].includes(status)) return;    //Ignore deletion for these cases
+                const tmp = await parent.delete_queue_entries([uid])
+            }
+        }
+    }
 
 }
 
