@@ -336,6 +336,10 @@ export class ComfyClient {
 
     //HISTORY
 
+    /**
+     * Obtain information about the history of requests.
+     * @returns The current state of history.
+     */
     async get_history(id?: string) {
         const tmp = (
             await fetch(
@@ -352,6 +356,9 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * Remove all past requests from history.
+     */
     async clear_history() {
         const tmp = (
             await fetch(
@@ -368,6 +375,10 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * Remove some requests from history.
+     * @param entries IDs of the requests to be removed
+     */
     async delete_history_entries(entries: string[]) {
         const tmp = (
             await fetch(
@@ -386,6 +397,10 @@ export class ComfyClient {
 
     //QUEUE
 
+    /**
+     * Obtain information about the current queue of requests.
+     * @returns The current state of the queue.
+     */
     async get_queue() {
         const tmp = (
             await fetch(
@@ -402,6 +417,9 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * Remove all requests from the current queue.
+     */
     async clear_queue() {
         const tmp = (
             await fetch(
@@ -422,6 +440,10 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * Remove some requests from the current queue.
+     * @param entries IDs of the requests to suspend/delete
+     */
     async delete_queue_entries(entries: string[]) {
         const tmp = (
             await fetch(
@@ -444,6 +466,9 @@ export class ComfyClient {
 
     // PROMPT
 
+    /**
+     * @returns Information about the requests currently in execution.
+     */
     async get_prompt() {
         const tmp = (
             await fetch(
@@ -460,6 +485,11 @@ export class ComfyClient {
         throw Error(tmp.statusText, { cause: tmp.status })
     }
 
+    /**
+     * Schedule a new request for execution.
+     * @param workflow The JSON of the complete workflow for submission.
+     * @returns Endpoint response with information like the ID.
+     */
     async post_prompt(workflow: unknown) {
         const tmp = (
             await fetch(
@@ -477,6 +507,12 @@ export class ComfyClient {
     }
 
 
+    /**
+     * Generate a new job (automatic handling of submission, callbacks and final cleanup)
+     * @param workflow The full JSON workflow to submit as part of the request.
+     * @param cb All the custom callbacks defined for the lifetime of this job
+     * @returns A handle for the newly scheduled job.
+     */
     async schedule_job(workflow: unknown, cb: {
         onCompleted?: () => (void | Promise<void>)
         onCancelled?: () => (void | Promise<void>)
@@ -549,9 +585,10 @@ export class ComfyClient {
 
 /**
  * More evolved version of ComfyJob, capable of automatically handling the initial setup of resources needed for the workflow, and the later collection of artifacts from it.
- */
+
 export class ComfySmartJob {
     constructor(inputs: Record<string, string>, outputs: Record<string, string>, outdir: string, workflow: unknown) {
 
     }
 }
+*/
