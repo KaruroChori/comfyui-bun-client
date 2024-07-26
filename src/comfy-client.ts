@@ -3,6 +3,8 @@
  */
 
 import { sleep } from "bun";
+import { BunFileToFile } from "./utils";
+import { basename, dirname } from "node:path"
 
 /**
  * States for a job to be in.
@@ -211,7 +213,9 @@ export class ComfyClient {
         form.set('type', opts.type ?? 'input')
         const tmp =
             await fetch(
-                `http${this.#secure ? "s" : ""}://${this.#endpoint}/upload/mask?clientId=${this.#uid}`,
+                `http${this.#secure ? "s" : ""}://${this.#endpoint}/upload/mask?${new URLSearchParams({
+                    clientId: this.#uid,
+                }).toString()}`,
                 { method: 'POST', body: form }
             )
         if (tmp.ok) {
@@ -514,17 +518,30 @@ export class ComfyClient {
     /**
      * Generate a new job (automatic handling of submission, callbacks and final cleanup)
      * @param workflow The full JSON workflow to submit as part of the request.
+     * @param infiles List of files to be uploaded as resources (and their naming mapping)
+     * @param infiles List of files to be downloaded upon completion (and their naming mapping)
      * @param cb All the custom callbacks defined for the lifetime of this job
      * @returns A handle for the newly scheduled job.
      */
-    async schedule_job(workflow: unknown, cb: {
-        onCompleted?: () => (void | Promise<void>)
-        onCancelled?: () => (void | Promise<void>)
-        onUpdate?: (node: number) => (void | Promise<void>)
-        onError?: (errors: unknown) => (void | Promise<void>)
-    }) {
+    async schedule_job(workflow: unknown,
+        infiles: { from: string; to?: string; tmp?: boolean; mask?: boolean }[],
+        outfiles: { from: string; to: string; tmp?: boolean }[],
+        cb: {
+            onCompleted?: () => (void | Promise<void>)
+            onCancelled?: () => (void | Promise<void>)
+            onUpdate?: (node: number) => (void | Promise<void>)
+            onError?: (errors: unknown) => (void | Promise<void>)
+        }
+    ) {
         let status: ComfyJob_Status = "building"
         let errors: unknown;
+
+        for (const file of infiles) {
+            const tmp = (file.mask ?? true) ?
+                await this.upload_image(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' }) :
+                await this.upload_mask(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' })
+            if (this.#debug) console.log(`Loaded ${file.from}`, tmp)
+        }
 
         const tmp = await this.post_prompt(workflow)
         const uid = tmp.prompt_id
@@ -540,6 +557,12 @@ export class ComfyClient {
                 status = "completed";
                 this.#jobs.delete(uid)
                 if (cb.onCompleted) await cb.onCompleted();
+                //Recover all artifacts from the server.
+                for (const file of outfiles) {
+                    const tmp = await this.view(basename(file.from), { subfolder: dirname(file.from), type: (file.tmp ?? true) ? 'temp' : 'input' })
+                    await Bun.write(file.to, tmp);
+                    if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp)
+                }
             },
             onUpdate: async (node) => {
                 status = "running";

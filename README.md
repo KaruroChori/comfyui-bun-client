@@ -1,8 +1,8 @@
 # ComfyUI client for bun
 
 > [!IMPORTANT]  
-> Please, be mindful that this library is specifically designed to only work with typescript and on the [bun](https://bun.sh/).
-> Porting it to other runtimes is mostly trivial, however there is no plan for that.
+> Please, be mindful that this library is specifically designed to only work with typescript and on the [bun](https://bun.sh/) runtime.  
+> Porting it to other runtimes is mostly trivial, however there is no plan for that.  
 > There is no pure javascript package as many of the advanced features like the **workflow builder** would make no sense.
 
 This library offers several tools to interface with [comfyui](https://github.com/comfyanonymous/ComfyUI) instances from typescript.  

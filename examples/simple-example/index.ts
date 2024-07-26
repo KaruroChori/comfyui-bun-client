@@ -42,12 +42,12 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
         const file = BunFileToFile(
             Bun.file("./asset.png")
         )
-        await client.upload_image(file, { overwrite: true })
+        await client.upload_mask(file, { overwrite: true })
         //console.log(await client.view_metadata('checkpoints', 'animagineXLV3_v30.safetensors'))
 
         console.log('Waiting for prompt 1 to submit')
         {
-            const wf = await client.schedule_job(PROMPT,
+            const wf = await client.schedule_job(PROMPT, [{ from: './asset.png' }], [],
                 {
                     onCompleted:
                         () => {
@@ -66,7 +66,7 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
 
         console.log('Waiting for prompt 2 to submit')
         {
-            const wf = await client.schedule_job({ ...(await import("./workflow-b.json")).default, client_id: client.uid },
+            const wf = await client.schedule_job({ ...(await import("./workflow-b.json")).default, client_id: client.uid }, [], [],
 
                 {
                     onCompleted:

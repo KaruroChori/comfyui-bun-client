@@ -5,10 +5,17 @@
 
 ## Needed for release 0.1.3
 
-- [ ] Utility functions to automatically collect artifacts and upload resources.
+- [x] Utility functions to automatically collect artifacts and upload resources.
+- [x] Add tests for the automatic functions
+- [ ] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
 
-## Needed for release 0.2.0
+## Needed for release 0.1.5
 
+- [ ] Add support for client-side certificates to authorize the connection with comfyui (needed for some semi-public configurations)
+
+## Needed for release 0.2.1
+
+- [ ] Typebox schemas for workflows+prompts
 - [ ] A complete workflow builder
   - [x] Get node info from the backend
   - [x] JSON preprocessing
