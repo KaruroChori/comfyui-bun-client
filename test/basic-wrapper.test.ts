@@ -10,3 +10,24 @@ test("connect-comfy", async () => {
     const tmp = await client.system_stats()
     expect(tmp).toBeObject();
 });
+
+//TODO
+test("upload-mask", async () => {
+    using client = new ComfyClient(process.env.COMFY!)
+    const tmp = await client.system_stats()
+    expect(tmp).toBeObject();
+});
+
+//TODO
+test("upload-image", async () => {
+    using client = new ComfyClient(process.env.COMFY!)
+    const tmp = await client.system_stats()
+    expect(tmp).toBeObject();
+});
+
+//TODO
+test("view", async () => {
+    using client = new ComfyClient(process.env.COMFY!)
+    const tmp = await client.system_stats()
+    expect(tmp).toBeObject();
+});

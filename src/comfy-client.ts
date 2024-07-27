@@ -5,6 +5,9 @@
 import { sleep } from "bun";
 import { BunFileToFile } from "./utils";
 import { basename, dirname } from "node:path"
+import type { Static } from "@sinclair/typebox";
+import { WorkflowSchema } from "./workflow-builder";
+import { Value } from "@sinclair/typebox/value";
 
 /**
  * States for a job to be in.
@@ -498,7 +501,7 @@ export class ComfyClient {
      * @param workflow The JSON of the complete workflow for submission.
      * @returns Endpoint response with information like the ID.
      */
-    async post_prompt(workflow: unknown) {
+    async post_prompt(workflow: Static<typeof WorkflowSchema>) {
         const tmp = (
             await fetch(
                 `http${this.#secure ? "s" : ""}://${this.#endpoint}/prompt?${new URLSearchParams({
@@ -533,6 +536,11 @@ export class ComfyClient {
             onError?: (errors: unknown) => (void | Promise<void>)
         }
     ) {
+        //Only this function is checking the workflow against the schema. Raw call to post_prompt are not.
+        if (!Value.Check(WorkflowSchema, workflow)) {
+            throw new Error("Schema validation for workflow failed!");
+        }
+
         let status: ComfyJob_Status = "building"
         let errors: unknown;
 
