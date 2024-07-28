@@ -31,9 +31,10 @@ export class ComfyClient {
     #debug = false;
 
     #jobs: Map<string, {
+        onStart: () => (void | Promise<void>),
         onCompleted: () => (void | Promise<void>),
         onCancelled: () => (void | Promise<void>),
-        onUpdate: (node: number) => (void | Promise<void>),
+        onUpdate: (node: number, done: boolean) => (void | Promise<void>),
         onError: (errors: unknown) => (void | Promise<void>)
     }>
 
@@ -61,12 +62,25 @@ export class ComfyClient {
         // message is received
         this.#socket.addEventListener("message", async (event) => {
             if (event.type === "message") {
+                //Ignore messages with blobs, as they are for preview and not relevant.
+                if (event.data.isBuffer?.()) return;
+
                 const data = JSON.parse(event.data);
 
                 if (data.type === "status") {
                     if (this.#debug) console.log("Status");
                     if (this.#debug) console.log(data.data);
-                } else if (data.type === "executing") {
+                }
+                else if (data.type === "execution_start") {
+                    const t = this.#jobs.get(data.data.prompt_id);
+                    if (t) {
+                        await t.onStart();
+                    }
+                }
+                else if (data.type === "execution_cached") {
+                    //TODO:Nothing to do
+                }
+                else if (data.type === "executing") {
                     if (this.#debug) console.log('Executing')
                     if (this.#debug) console.log(data.data);
                     //Last execution for the prompt
@@ -75,10 +89,22 @@ export class ComfyClient {
                         await t.onCompleted()
                     }
                     else if (t) {
-                        await t.onUpdate(data.data.node)
+                        await t.onUpdate(data.data.node, false)
                     }
-                } else if (data.type === "crystools.monitor") {
+                } else if (data.type === "progress") {
+                    //TODO: Ignore for now, progress is not important for headless operations
+                }
+                else if (data.type === "executed") {
+                    const t = this.#jobs.get(data.data.prompt_id)
+                    if (t) {
+                        await t.onUpdate(data.data.node, true)
+                    }
+                }
+                else if (data.type === "crystools.monitor") {
                     //TODO: Ignore for now, based on an external extension
+                }
+                else {
+                    if (this.#debug) console.warn("Unhandled msg on ws", data.type, data.data)
                 }
             }
         });
@@ -206,13 +232,13 @@ export class ComfyClient {
             overwrite?: boolean,
             subfolder?: string,
             type?: ComfyResType
-            original_ref?: string
+            original_ref?: { filename: string, type: ComfyResType, subfolder: string }
         } = {}) {
         const form = new FormData()
         if (opts.overwrite === true) form.set("overwrite", "true");
         form.set('image', content, content.name)
         form.set('subfolder', opts.subfolder ?? '')
-        if (opts.original_ref !== undefined) form.set('original_ref', opts.original_ref)
+        if (opts.original_ref !== undefined) form.set('original_ref', JSON.stringify(opts.original_ref ?? { type: opts.type ?? 'input', subfolder: opts.subfolder ?? '', filename: content.name }))
         form.set('type', opts.type ?? 'input')
         const tmp =
             await fetch(
@@ -530,9 +556,10 @@ export class ComfyClient {
         infiles: { from: string; to?: string; tmp?: boolean; mask?: boolean }[],
         outfiles: { from: string; to: string; tmp?: boolean }[],
         cb: {
+            onStart?: () => (void | Promise<void>)
             onCompleted?: () => (void | Promise<void>)
             onCancelled?: () => (void | Promise<void>)
-            onUpdate?: (node: number) => (void | Promise<void>)
+            onUpdate?: (node: number, done: boolean) => (void | Promise<void>)
             onError?: (errors: unknown) => (void | Promise<void>)
         }
     ) {
@@ -561,6 +588,10 @@ export class ComfyClient {
             if (cb.onError) await cb.onError(tmp.errors);
         }
         this.#jobs.set(uid, {
+            onStart: async () => {
+                status = "running";
+                if (cb.onStart) await cb.onStart();
+            },
             onCompleted: async () => {
                 status = "completed";
                 this.#jobs.delete(uid)
@@ -572,9 +603,9 @@ export class ComfyClient {
                     if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp)
                 }
             },
-            onUpdate: async (node) => {
+            onUpdate: async (node, done) => {
                 status = "running";
-                if (cb.onUpdate) await cb.onUpdate(node);
+                if (cb.onUpdate) await cb.onUpdate(node, done);
             },
             onError: async (errors) => {
                 status = "failed";
@@ -588,8 +619,6 @@ export class ComfyClient {
         })
 
         const parent = this;
-
-
 
         return {
             get uid() { return uid },

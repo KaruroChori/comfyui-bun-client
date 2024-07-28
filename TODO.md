@@ -7,9 +7,12 @@
 
 - [x] Utility functions to automatically collect artifacts and upload resources.
 - [x] Add tests for the automatic functions
-- [ ] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
 
 ## Needed for release 0.1.5
+
+- [ ] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
+
+## Needed for release 0.1.7
 
 - [ ] Add support for client-side certificates to authorize the connection with comfyui (needed for some semi-public configurations)
 
