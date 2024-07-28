@@ -1,5 +1,5 @@
 import { sleep } from 'bun'
-import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
+import { ComfyClient, ComfyJSONToTypescript } from '../../index'
 
 {
     //Variable with a scope-contrained lifetime
@@ -22,6 +22,9 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
         {
             const wf = await client.schedule_job({ ...(await import("./assets/workflow-a.json")).default, client_id: client.uid }, [{ from: './assets/asset.png' }], [],
                 {
+                    onStart: () => {
+                        console.log("Started working on 1")
+                    },
                     onCompleted:
                         () => {
                             console.log("Done with 1");
@@ -42,6 +45,9 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
             const wf = await client.schedule_job({ ...(await import("./assets/workflow-b.json")).default, client_id: client.uid }, [], [],
 
                 {
+                    onStart: () => {
+                        console.log("Started working on 2")
+                    },
                     onCompleted:
                         () => {
                             console.log("Done with 2");

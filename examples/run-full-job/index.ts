@@ -1,5 +1,5 @@
 import { sleep } from 'bun'
-import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
+import { ComfyClient } from '../../index'
 
 {
     //Variable with a scope-contrained lifetime
@@ -9,20 +9,7 @@ import { BunFileToFile, ComfyClient, ComfyJSONToTypescript } from '../../index'
 
         console.log('Waiting for prompt 1 to submit')
         {
-            const wf = await client.schedule_job({ ...(await import("./assets/workflow-a.json")).default, client_id: client.uid }, [], [],
-                {
-                    onCompleted:
-                        () => {
-                            console.log("Done with 1");
-                        },
-                    onUpdate:
-                        () => {
-                            console.log("Working on 1");
-                        },
-                    onError:
-                        () => { },
-                }
-            );
+            const wf = await client.schedule_job({ ...(await import("./assets/workflow-a.json")).default, client_id: client.uid }, [], [], {});
         }
         console.log('Prompt 1 done!')
 

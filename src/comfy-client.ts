@@ -63,15 +63,15 @@ export class ComfyClient {
         this.#socket.addEventListener("message", async (event) => {
             if (event.type === "message") {
                 //Ignore messages with blobs, as they are for preview and not relevant.
-                if (event.data.isBuffer?.()) return;
+                if (typeof event.data !== 'string') return;
 
                 const data = JSON.parse(event.data);
 
                 if (data.type === "status") {
-                    if (this.#debug) console.log("Status");
-                    if (this.#debug) console.log(data.data);
+                    if (this.#debug) { console.log("Status"); console.log(data.data); }
                 }
                 else if (data.type === "execution_start") {
+                    if (this.#debug) { console.log('Execution start'); console.log(data.data); }
                     const t = this.#jobs.get(data.data.prompt_id);
                     if (t) {
                         await t.onStart();
@@ -81,8 +81,7 @@ export class ComfyClient {
                     //TODO:Nothing to do
                 }
                 else if (data.type === "executing") {
-                    if (this.#debug) console.log('Executing')
-                    if (this.#debug) console.log(data.data);
+                    if (this.#debug) { console.log('Executing'); console.log(data.data); }
                     //Last execution for the prompt
                     const t = this.#jobs.get(data.data.prompt_id)
                     if (data.data.node === null && t) {
@@ -95,6 +94,7 @@ export class ComfyClient {
                     //TODO: Ignore for now, progress is not important for headless operations
                 }
                 else if (data.type === "executed") {
+                    if (this.#debug) { console.log('Executed'); console.log(data.data); }
                     const t = this.#jobs.get(data.data.prompt_id)
                     if (t) {
                         await t.onUpdate(data.data.node, true)
