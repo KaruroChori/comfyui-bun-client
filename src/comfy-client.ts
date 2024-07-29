@@ -36,7 +36,6 @@ export class ComfyClient {
         onCancelled: () => (void | Promise<void>),
         onUpdate: (node: number, done: boolean) => (void | Promise<void>),
         onError: (errors: unknown) => (void | Promise<void>),
-        report: Map<number, { images: { filename: string, subfolder: string, type: ComfyResType }[] }>
     }>
 
     get running() { return this.#running }
@@ -79,7 +78,7 @@ export class ComfyClient {
                     }
                 }
                 else if (data.type === "execution_cached") {
-                    //TODO:Nothing to do
+                    if (this.#debug) { console.log('Execution cached'); console.log(data.data); }
                 }
                 else if (data.type === "executing") {
                     if (this.#debug) { console.log('Executing'); console.log(data.data); }
@@ -99,8 +98,6 @@ export class ComfyClient {
                     if (this.#debug) { console.log('Executed'); console.log(data.data); }
                     const t = this.#jobs.get(data.data.prompt_id)
                     if (t) {
-                        //Save the output state to recover it later.
-                        t.report.set(Number.parseInt(data.data.node), data.data.output)
                         await t.onUpdate(data.data.node, true)
                     }
                 }
@@ -599,12 +596,13 @@ export class ComfyClient {
             onCompleted: async () => {
                 status = "completed";
                 //Recover all artifacts from the server.
+                const result = await this.get_history(uid)
+
                 for (const file of outfiles) {
                     const t = this.#jobs.get(uid);
-                    const images = t?.report.get(file.from)?.images ?? []
-
+                    const images = result[uid].outputs[file.from]?.images ?? [];
                     let i = 0;
-                    for (const image of images) {
+                    for (const [_, image] of Object.entries(images)) {
                         const tmp = await this.view(image.filename, { subfolder: image.subfolder, type: image.type });
                         await Bun.write(file.to(i++), tmp);
                         if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp);
@@ -627,8 +625,7 @@ export class ComfyClient {
                 status = "cancelled";
                 this.#jobs.delete(uid); //TODO: Check if it should be.
                 if (cb.onCancelled) await cb.onCancelled();
-            },
-            report: new Map()
+            }
         })
 
         const parent = this;
