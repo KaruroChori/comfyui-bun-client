@@ -3,10 +3,11 @@
 ## Needed for release 0.1.5
 
 - [ ] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
+- [ ] Better error handling when workflows fail
 
 ## Needed for release 0.2.1
 
-- [ ] Typebox schemas for workflows+prompts
+- [x] (partial) Typebox schemas for workflows+prompts
 - [ ] A complete workflow builder
   - [x] Get node info from the backend
   - [x] JSON preprocessing

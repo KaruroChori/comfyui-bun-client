@@ -1,5 +1,5 @@
 import { sleep } from 'bun'
-import { ComfyClient, ComfyJSONToTypescript } from '../../index'
+import { ComfyClient } from '../../index'
 
 {
     //Variable with a scope-contrained lifetime
@@ -59,8 +59,6 @@ import { ComfyClient, ComfyJSONToTypescript } from '../../index'
         }
 
         console.log('Prompt 2 done!')
-
-        await ComfyJSONToTypescript(client, './interface.ts')
     }
     catch (e) {
         console.log(e)

@@ -1,11 +1,13 @@
 //TODO: To write for 0.2.x
 
 import { sleep } from 'bun'
-import { ComfyClient } from '../../index'
+import { ComfyClient, ComfyJSONToTypescript } from '../../index'
 
 {
     //Variable with a scope-contrained lifetime
     using client = new ComfyClient(process.env.COMFY ?? 'localhost:8188', { debug: true })
+
+    await ComfyJSONToTypescript(client, './interface.ts')
 
     try {
 

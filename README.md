@@ -9,7 +9,7 @@ This library offers several tools to create custom clients for [comfyui](https:/
 It consists of:
 
 - A mostly 1-to-1 wrapper for all of the REST endpoints defined by ComfyUI.
-- An abstraction for **Jobs**, with custom callbacks and several utilities to simplify their deployment and artifact collection.
+- An abstraction for **jobs**, with custom callbacks and several utilities to simplify their deployment and artifact collection.
 - A workflow builder, allowing you to parametrize JSON workflows, or to write your own in typescript.
 
 ## Quick start
@@ -47,4 +47,5 @@ Please, follow the instructions [here](./docs/developers.md).
 
 ## Milestones
 
-You can find information about what is expected in future releases [here](./TODO.md). Those plans are subject to change at any time.
+You can find information about what is expected in future releases [here](./TODO.md).  
+Those plans are subject to change at any time.

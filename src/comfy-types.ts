@@ -3,7 +3,8 @@
  */
 
 
-//TODO: Make sure the generated code is based on escaped variables. At this point, symbols like `'` or `"` in several of the json fields would result in generation bugs.
+//NOTICE: Make sure the generated code is based on escaped variables.
+//Symbols like `'` or `"` in several of the json fields would result in generation bugs.
 
 import type { ComfyClient } from "./comfy-client"
 
@@ -43,6 +44,12 @@ function NormalizeComfyJSON(cfg: Record<string, {
     }]))
 }
 
+//TODO: If not converted to string at times the object is not string. This must be checked!
+function $(str: string | number) {
+    if (typeof str !== 'string') return str.toString()
+    else return str.replaceAll("'", '\\\'')
+}
+
 
 
 function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
@@ -57,7 +64,7 @@ function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
             else return type;
         }
         else {
-            if (type.length !== 0) return type.map(x => `'${x}'`).join('|')
+            if (type.length !== 0) return type.map(x => `'${$(x)}'`).join('|')
             else return 'void';
         }
     }
@@ -69,23 +76,23 @@ function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
      */
     '${metadata.name}' : class extends Node{
         //Setters
-        ${Object.entries(inputs).map((x, i) => `set '${x[0]}'(value : ${TypeFromComfyUI(x[1].type)})  { super.$$link(${i}, value) } `).join('\n')}
+        ${Object.entries(inputs).map((x, i) => `set '${$(x[0])}'(value : ${TypeFromComfyUI(x[1].type)})  { super.$$link(${i}, value) } `).join('\n')}
 
         //Getters
-        ${Object.entries(outputs).map((x, i) => `get '${x[0]}'() : ${TypeFromComfyUI(x[1].type)} { return [this, '${x[0]}', ${i}]  as unknown as ${TypeFromComfyUI(x[1].type)}; }`).join('\n')}
+        ${Object.entries(outputs).map((x, i) => `get '${$(x[0])}'() : ${TypeFromComfyUI(x[1].type)} { return [this, '${$(x[0])}', ${i}]  as unknown as ${TypeFromComfyUI(x[1].type)}; }`).join('\n')}
 
         constructor(opts:{
-            ${Object.entries(inputs).map(x => `'${x[0]}'${x[1].required ? '' : '?'}: ${TypeFromComfyUI(x[1].type)}`).join(',')}
+            ${Object.entries(inputs).map(x => `'${$(x[0])}'${x[1].required ? '' : '?'}: ${TypeFromComfyUI(x[1].type)}`).join(',')}
         }){
             super(ctx);
 
-            ${Object.entries(inputs).filter(x => x[1].required === true).map(x => `this['${x[0]}'] = opts['${x[0]}']`).join(';\n')}
-            ${Object.entries(inputs).filter(x => x[1].required !== true).map(x => `if(opts['${x[0]}']!==undefined) this['${x[0]}'] = opts['${x[0]}']`).join(';\n')}
+            ${Object.entries(inputs).filter(x => x[1].required === true).map(x => `this['${$(x[0])}'] = opts['${$(x[0])}']`).join(';\n')}
+            ${Object.entries(inputs).filter(x => x[1].required !== true).map(x => `if(opts['${$(x[0])}']!==undefined) this['${$(x[0])}'] = opts['${$(x[0])}']`).join(';\n')}
 
         }
 
         static defaults = {
-            ${Object.entries(inputs).map(x => x[1].metadata?.default !== undefined ? `'${x[0]}':  ${JSON.stringify(x[1].metadata?.default)}` : undefined).filter(x => x !== undefined).join(',\n')}
+            ${Object.entries(inputs).map(x => x[1].metadata?.default !== undefined ? `'${$(x[0])}':  ${JSON.stringify(x[1].metadata?.default)}` : undefined).filter(x => x !== undefined).join(',\n')}
 }
 }`)
     }
@@ -110,7 +117,7 @@ export type FLOAT<min = void, max = void> = number;
 export type BOOLEAN = boolean;
 
 type ANY = 'ANY';
-${[...types].map(x => `type ${x} = '${x}'`).join('\n')}
+${[...types].map(x => `type ${$(x)} = '${$(x)}'`).join('\n')}
 export const Workflow = () => {const ctx=new Map(); return { \n${pieces.join(',\n')} \n, $compile : async function (){/*TODO*/} }}`
 }
 
