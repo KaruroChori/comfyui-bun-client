@@ -555,7 +555,7 @@ export class ComfyClient {
      */
     async schedule_job(workflow: unknown,
         infiles: { from: string; to?: string; tmp?: boolean; mask?: boolean }[],
-        outfiles: { from: number; to: (x: number) => string; }[],
+        outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string; }[],
         cb: {
             onStart?: () => (void | Promise<void>)
             onCompleted?: () => (void | Promise<void>)
@@ -600,13 +600,16 @@ export class ComfyClient {
 
                 for (const file of outfiles) {
                     const t = this.#jobs.get(uid);
-                    const images = (result[uid].outputs[file.from]?.images ?? []) as { filename: string, subfolder: string, type: ComfyResType }[];
-                    let i = 0;
-                    for (const [_, image] of Object.entries(images)) {
-                        const tmp = await this.view(image.filename, { subfolder: image.subfolder, type: image.type });
-                        await Bun.write(file.to(i++), tmp);
-                        if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp);
+                    for (const [format, entries] of Object.entries(result[uid].outputs[file.from])) {
+                        const entires = entries as { filename: string, subfolder: string, type: ComfyResType }[];
+                        let i = 0;
+                        for (const [_, entry] of Object.entries(entires)) {
+                            const tmp = await this.view(entry.filename, { subfolder: entry.subfolder, type: entry.type });
+                            await Bun.write(file.to(i++, entry.filename, 'images'), tmp);
+                            if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp);
+                        }
                     }
+
                 }
                 this.#jobs.delete(uid);
                 if (cb.onCompleted) await cb.onCompleted();

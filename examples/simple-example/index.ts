@@ -11,12 +11,7 @@ import { ComfyClient, ComfyJSONToTypescript } from '../../index'
     console.log(await client.extensions())
 
     try {
-        /*const file = BunFileToFile(
-            Bun.file("./assets/asset.png")
-        )
-        await client.upload_mask(file, { overwrite: true })
-        console.log(await client.view_metadata('checkpoints', 'animagineXLV3_v30.safetensors'))
-        */
+        //console.log(await client.view_metadata('checkpoints', 'animagineXLV3_v30.safetensors'))
 
         console.log('Waiting for prompt 1 to submit')
         {
@@ -82,6 +77,5 @@ import { ComfyClient, ComfyJSONToTypescript } from '../../index'
         if (client.running === false || close) break;
     }
 
-    //client.close()
     console.log("Closing app")
 }
