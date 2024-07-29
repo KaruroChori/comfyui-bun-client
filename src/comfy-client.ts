@@ -17,7 +17,7 @@ export type ComfyJob_Status = "building" | "queued" | "running" | "completed" | 
 /**
  * Possible resource types in ComfyUI
  */
-export type ComfyResType = 'input' | 'output' | 'temp'  //TODO: check if this is correct and exhaustive.
+export type ComfyResType = 'input' | 'output' | 'temp'
 
 /**
  * A comfyui client, exposing all its REST endpoints.

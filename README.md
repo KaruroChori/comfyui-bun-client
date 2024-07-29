@@ -41,6 +41,10 @@ You can find more complex usage scenarios of this library documented in `./examp
 
 [Check here.](./docs/custom-workflows.md)
 
-## For developers
+## Information for developers
 
 Please, follow the instructions [here](./docs/developers.md).
+
+## Milestones
+
+You can find information about what is expected in future releases [here](./TODO.md). Those plans are subject to change at any time.

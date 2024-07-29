@@ -1,11 +1,25 @@
+## Getting started
+
+You can start by cloning this repo and installing all the relevant dependencies.
+
+```sh
+git clone https://github.com/KaruroChori/comfyui-bun-client
+cd comfyui-bun-client
+bun install
+```
+
+The master branch is used to store the mainline in-dev version. Stable releases are defined by tags.
+As for versioning, the last number for any public release is odd. Even numbers are used internally during development only. For example `v0.1.5` is the in-dev version for `v0.1.6`.
+
 ## Test suite
 
-To run the test suite, a compatible ComfyUI instance is needed.  
-Its address can either be set in the environment file `.env.test` as `COMFY`, or it will default to `localhost:8188`.
+To run the test suite, you need access to a compatible ComfyUI instance.  
+Its address can be set in the environment file `.env.test` under the variable `COMFY`. Otherwise, it will default to `localhost:8188`.
 
 ## Examples
 
-Examples of usage of this library can be found in `./examples`.
+You can find several examples on how to use this library in `./examples`. If you want to add more, you are welcome.  
+However, examples requiring additional dependencies will not be accepted unless a separate local `package.json` file is provided.
 
 ## Linting
 
