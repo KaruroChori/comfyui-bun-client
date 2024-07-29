@@ -35,7 +35,8 @@ export class ComfyClient {
         onCompleted: () => (void | Promise<void>),
         onCancelled: () => (void | Promise<void>),
         onUpdate: (node: number, done: boolean) => (void | Promise<void>),
-        onError: (errors: unknown) => (void | Promise<void>)
+        onError: (errors: unknown) => (void | Promise<void>),
+        report: Map<number, { images: { filename: string, subfolder: string, type: ComfyResType }[] }>
     }>
 
     get running() { return this.#running }
@@ -82,21 +83,24 @@ export class ComfyClient {
                 }
                 else if (data.type === "executing") {
                     if (this.#debug) { console.log('Executing'); console.log(data.data); }
-                    //Last execution for the prompt
                     const t = this.#jobs.get(data.data.prompt_id)
+                    //Last execution for the prompt (?)
                     if (data.data.node === null && t) {
                         await t.onCompleted()
                     }
                     else if (t) {
                         await t.onUpdate(data.data.node, false)
                     }
-                } else if (data.type === "progress") {
+                }
+                else if (data.type === "progress") {
                     //TODO: Ignore for now, progress is not important for headless operations
                 }
                 else if (data.type === "executed") {
                     if (this.#debug) { console.log('Executed'); console.log(data.data); }
                     const t = this.#jobs.get(data.data.prompt_id)
                     if (t) {
+                        //Save the output state to recover it later.
+                        t.report.set(Number.parseInt(data.data.node), data.data.output)
                         await t.onUpdate(data.data.node, true)
                     }
                 }
@@ -554,7 +558,7 @@ export class ComfyClient {
      */
     async schedule_job(workflow: unknown,
         infiles: { from: string; to?: string; tmp?: boolean; mask?: boolean }[],
-        outfiles: { from: string; to: string; tmp?: boolean }[],
+        outfiles: { from: number; to: (x: number) => string; }[],
         cb: {
             onStart?: () => (void | Promise<void>)
             onCompleted?: () => (void | Promise<void>)
@@ -594,14 +598,21 @@ export class ComfyClient {
             },
             onCompleted: async () => {
                 status = "completed";
-                this.#jobs.delete(uid)
-                if (cb.onCompleted) await cb.onCompleted();
                 //Recover all artifacts from the server.
                 for (const file of outfiles) {
-                    const tmp = await this.view(basename(file.from), { subfolder: dirname(file.from), type: (file.tmp ?? true) ? 'temp' : 'input' })
-                    await Bun.write(file.to, tmp);
-                    if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp)
+                    const t = this.#jobs.get(uid);
+                    const images = t?.report.get(file.from)?.images ?? []
+
+                    let i = 0;
+                    for (const image of images) {
+                        const tmp = await this.view(image.filename, { subfolder: image.subfolder, type: image.type });
+                        await Bun.write(file.to(i++), tmp);
+                        if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp);
+                    }
                 }
+                this.#jobs.delete(uid);
+                if (cb.onCompleted) await cb.onCompleted();
+
             },
             onUpdate: async (node, done) => {
                 status = "running";
@@ -609,13 +620,15 @@ export class ComfyClient {
             },
             onError: async (errors) => {
                 status = "failed";
-                this.#jobs.delete(uid)
+                this.#jobs.delete(uid);
                 if (cb.onError) await cb.onError(errors);
             },
             onCancelled: async () => {
                 status = "cancelled";
+                this.#jobs.delete(uid); //TODO: Check if it should be.
                 if (cb.onCancelled) await cb.onCancelled();
             },
+            report: new Map()
         })
 
         const parent = this;

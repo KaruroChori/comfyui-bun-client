@@ -9,7 +9,7 @@ import { ComfyClient } from '../../index'
 
         console.log('Waiting for prompt 1 to submit')
         {
-            const wf = await client.schedule_job({ ...(await import("./assets/workflow-a.json")).default, client_id: client.uid }, [], [], {});
+            const wf = await client.schedule_job({ ...(await import("./assets/workflow-a.json")).default, client_id: client.uid }, [], [{ from: 10, to: (x) => `./tmp/asset-${x}.png` }], {});
         }
         console.log('Prompt 1 done!')
 
