@@ -600,7 +600,7 @@ export class ComfyClient {
 
                 for (const file of outfiles) {
                     const t = this.#jobs.get(uid);
-                    const images = result[uid].outputs[file.from]?.images ?? [];
+                    const images = (result[uid].outputs[file.from]?.images ?? []) as { filename: string, subfolder: string, type: ComfyResType }[];
                     let i = 0;
                     for (const [_, image] of Object.entries(images)) {
                         const tmp = await this.view(image.filename, { subfolder: image.subfolder, type: image.type });

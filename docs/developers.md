@@ -9,5 +9,5 @@ Examples of usage of this library can be found in `./examples`.
 
 ## Linting
 
-Biome is used as linter. A configuration file is provided in the root document, and your editor is expected to run it on save.  
-At the very least, make sure to run it before a commit.
+[Biome](https://biomejs.dev/linter/) is used as linter. A configuration file is provided in the root directory, and your editor is expected to run it _on save_.  
+At the very least, make sure to run it before a commit to master or PR is done.
