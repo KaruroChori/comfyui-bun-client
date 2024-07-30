@@ -3,7 +3,7 @@
 ## Needed for release 0.1.5
 
 - [ ] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
-- [ ] Better error handling when workflows fail
+- [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.2.1
 
@@ -12,7 +12,10 @@
   - [x] Get node info from the backend
   - [x] JSON preprocessing
   - [x] Code generation (static types)
+  - [ ] Generated jsdoc comment headers
   - [ ] Runtime compile operation
+    - [ ] Generate intermediate JSON
+    - [ ] Compile it into a comfyui compatible workflow
   - [ ] Interpolation support
 
 ## Needed for release 0.3.x
