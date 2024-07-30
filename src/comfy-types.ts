@@ -111,6 +111,19 @@ export class Node {
     }
 }
 
+class TNode<T> extends Node{}
+class TArgNode<T> extends Node{}
+
+//Class for terminal values
+export function $<T> (value:T){
+    return new TNode(value) as T
+}
+
+//Class for terminal patterns (replaced later)
+export function $$<T> (value:T){
+    return new TArgNode(value) as T
+}
+
 export type STRING = string;
 export type INT<min = void, max = void> = number;
 export type FLOAT<min = void, max = void> = number;
@@ -118,7 +131,16 @@ export type BOOLEAN = boolean;
 
 type ANY = 'ANY';
 ${[...types].map(x => `type ${$(x)} = '${$(x)}'`).join('\n')}
-export const Workflow = () => {const ctx=new Map(); return { \n${pieces.join(',\n')} \n, $compile : async function (){/*TODO*/} }}`
+export const Workflow = () => {
+    const ctx=new Map();
+    return {
+        ${pieces.join(',\n')},
+        $compile : async function (){
+            /*TODO*/
+        }
+    }
+}`
+
 }
 
 export async function ComfyJSONToTypescript(client: ComfyClient, filename: string) {
