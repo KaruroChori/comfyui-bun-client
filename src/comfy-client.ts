@@ -570,7 +570,7 @@ export class ComfyClient {
         }
 
         let status: ComfyJob_Status = "building"
-        let errors: unknown;
+        const errors: unknown[] = [];
 
         for (const file of infiles) {
             const tmp = (file.mask ?? true) ?
@@ -586,7 +586,8 @@ export class ComfyClient {
 
         if (Object.keys(tmp.node_errors).length !== 0) {
             status = 'failed'
-            if (cb.onError) await cb.onError(tmp.errors);
+            errors.push(tmp.node_errors)
+            if (cb.onError) await cb.onError(tmp.node_errors);
         }
         this.#jobs.set(uid, {
             onStart: async () => {
@@ -619,14 +620,15 @@ export class ComfyClient {
                 status = "running";
                 if (cb.onUpdate) await cb.onUpdate(node, done);
             },
-            onError: async (errors) => {
+            onError: async (e) => {
                 status = "failed";
+                errors.push(errors);
                 this.#jobs.delete(uid);
-                if (cb.onError) await cb.onError(errors);
+                if (cb.onError) await cb.onError(e);
             },
             onCancelled: async () => {
                 status = "cancelled";
-                this.#jobs.delete(uid); //TODO: Check if it should be.
+                this.#jobs.delete(uid);
                 if (cb.onCancelled) await cb.onCancelled();
             }
         })
@@ -639,13 +641,13 @@ export class ComfyClient {
             get errors() { return errors },
 
 
-            //TODO
             //To await completion, collect the result and do something with it.
             async completion() {
                 while (true) {
                     if (status === 'running' || status === 'queued') await sleep(0)
                     else break;
                 }
+                return this;
             },
 
             /**
@@ -654,18 +656,9 @@ export class ComfyClient {
             async cancel() {
                 if (['cancelled', 'failed', 'completed', 'building'].includes(status)) return;    //Ignore deletion for these cases
                 const tmp = await parent.delete_queue_entries([uid])
+                return this;
             }
         }
     }
 
 }
-
-/**
- * More evolved version of ComfyJob, capable of automatically handling the initial setup of resources needed for the workflow, and the later collection of artifacts from it.
-
-export class ComfySmartJob {
-    constructor(inputs: Record<string, string>, outputs: Record<string, string>, outdir: string, workflow: unknown) {
-
-    }
-}
-*/
