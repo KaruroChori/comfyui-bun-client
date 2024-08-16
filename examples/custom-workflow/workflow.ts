@@ -1,8 +1,7 @@
 import { Workflow } from "./interface.ts"
 
-const tmp = Workflow();
+const comfy = Workflow();
 
-const nodeA = new tmp.LoadImage({ image: "QSCF8096.JPG" })
+const nodeA = new comfy.LoadImage({ image: "QSCF8096.JPG" })
 
-
-export const workflow = tmp.$compile()
+export const workflow = comfy.$compile()
