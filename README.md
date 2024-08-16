@@ -2,19 +2,20 @@
 
 > [!IMPORTANT]  
 > This library is specifically designed to work with typescript and the [bun](https://bun.sh/) runtime.  
-> Porting it to other runtimes is mostly trivial, however there is no current plan for that.  
+> Porting it to other runtimes is mostly trivial, however there is no plan for that right now.  
 > No javascript distribution is provided as some features like the **workflow builder** do require typescript.
 
 This library offers several tools to create custom clients for [comfyui](https://github.com/comfyanonymous/ComfyUI).  
+It is specifically designed for headless operation and automation.  
 It consists of:
 
-- A mostly 1-to-1 wrapper for all of the REST endpoints defined by ComfyUI.
+- A mostly 1-to-1 wrapper for all the REST endpoints defined by ComfyUI.
 - An abstraction for **jobs**, with custom callbacks and several utilities to simplify their deployment and artifact collection.
-- A workflow builder, allowing you to parametrize JSON workflows, or to write your own in typescript.
+- (WIP) A workflow builder, allowing you to parametrize JSON workflows, or to write your own in typescript instead of interpolating those created via the UI.
 
 ## Quick start
 
-Add this library to your `package.json` (make sure to select the proper version from all releases):
+Add this library to your `package.json` (make sure to select the relevant release, as this readme could be outdated):
 
 ```sh
 bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.1.3

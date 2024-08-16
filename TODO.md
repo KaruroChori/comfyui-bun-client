@@ -12,15 +12,16 @@
   - [x] Get node info from the backend
   - [x] JSON preprocessing
   - [x] Code generation (static types)
-  - [ ] Generated jsdoc comment headers
+  - [x] Generated JSDOC comment headers
   - [ ] Runtime compile operation
+    - [x] Build DAG
     - [ ] Generate intermediate JSON
     - [ ] Compile it into a comfyui compatible workflow
-  - [ ] Interpolation support
 
 ## Needed for release 0.3.x
 
 - [ ] Add support for client-side certificates to authorize the connection with comfyui (needed for some semi-public configurations)
+- [ ] Add interpolation support for compiled workflows. Needed to generate many variants fast
 
 # Older releases
 
