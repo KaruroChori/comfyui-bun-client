@@ -233,8 +233,8 @@ export class ComfyClient {
             overwrite?: boolean,
             subfolder?: string,
             type?: ComfyResType
-            original_ref?: { filename: string, type: ComfyResType, subfolder: string }
-        } = {}) {
+            original_ref: { filename: string, type?: ComfyResType, subfolder?: string }
+        }) {
         const form = new FormData()
         if (opts.overwrite === true) form.set("overwrite", "true");
         form.set('image', content, content.name)
