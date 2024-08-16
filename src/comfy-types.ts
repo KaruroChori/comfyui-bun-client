@@ -19,7 +19,7 @@ function NormalizeComfyJSON(cfg: Record<string, {
     output_is_list: boolean[],
     name: string, display_name: string, description: string, python_module: string, category: string, output_node: boolean
 }>): Record<string, {
-    inputs: Record<string, { required: boolean, type: string | string[], metadata: { min?: unknown, max?: unknown, default?: unknown, step?: unknown } }>,
+    inputs: Record<string, { required: boolean, type: string | string[], metadata?: { min?: unknown, max?: unknown, default?: unknown, step?: unknown } }>,
     outputs: Record<string, { is_list: boolean, type: string }>,
     metadata: { name: string, display_name: string, description: string, is_output_node: boolean, python_module: string, category: string }
 }> {
@@ -51,7 +51,11 @@ function $(str: string | number) {
 }
 
 
-
+/**
+ * 
+ * @param cfg 
+ * @returns 
+ */
 function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
     const types: Set<string> = new Set()
     const pieces = []
@@ -72,27 +76,30 @@ function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
     for (const [name, { inputs, outputs, metadata }] of Object.entries(cfg)) {
         pieces.push(`
     /**
-     * TODO Docs based on metadata
-     */
+     * ${metadata.display_name} from ${metadata.category}
+     * @desc ${metadata.description}
+    */
     '${metadata.name}' : class extends Node{
         //Setters
-        ${Object.entries(inputs).map((x, i) => `set '${$(x[0])}'(value : ${TypeFromComfyUI(x[1].type)})  { super.$$link(${i}, value) } `).join('\n')}
+        ${Object.entries(inputs).map((x, i) => `//set '${$(x[0])}'(value : ${TypeFromComfyUI(x[1].type)})  { super.$$link(${i}, value) } `).join('\n')}
 
         //Getters
         ${Object.entries(outputs).map((x, i) => `get '${$(x[0])}'() : ${TypeFromComfyUI(x[1].type)} { return [this, '${$(x[0])}', ${i}]  as unknown as ${TypeFromComfyUI(x[1].type)}; }`).join('\n')}
 
+        /**
+          * Constructor
+${Object.entries(inputs).map((x, i) => `\t\t * @param opts.${x[0]}${x[1].metadata?.default ? ` default: ${JSON.stringify(x[1].metadata.default)}` : ""}${x[1].metadata?.min ? ` max: ${x[1].metadata.max}` : ""}${x[1].metadata?.min ? ` min: ${x[1].metadata.min}` : ""}${x[1].metadata?.step ? ` step: ${x[1].metadata.step}` : ""}`).join('\n')}}
+        */
         constructor(opts:{
             ${Object.entries(inputs).map(x => `'${$(x[0])}'${x[1].required ? '' : '?'}: ${TypeFromComfyUI(x[1].type)}`).join(',')}
         }){
             super(ctx);
 
-            ${Object.entries(inputs).filter(x => x[1].required === true).map(x => `this['${$(x[0])}'] = opts['${$(x[0])}']`).join(';\n')}
-            ${Object.entries(inputs).filter(x => x[1].required !== true).map(x => `if(opts['${$(x[0])}']!==undefined) this['${$(x[0])}'] = opts['${$(x[0])}']`).join(';\n')}
-
-        }
+            ${Object.entries(inputs).filter(x => x[1].required === true).map((x, i) => x[1].required ? `super.$$link(${i}, opts['${$(x[0])}'])` : `if(opts['${$(x[0])}']!==undefined) super.$$link(${i}, opts['${$(x[0])}'])`).join(';\n')}
+}
 
         static defaults = {
-            ${Object.entries(inputs).map(x => x[1].metadata?.default !== undefined ? `'${$(x[0])}':  ${JSON.stringify(x[1].metadata?.default)}` : undefined).filter(x => x !== undefined).join(',\n')}
+    ${Object.entries(inputs).map(x => x[1].metadata?.default !== undefined ? `'${$(x[0])}':  ${JSON.stringify(x[1].metadata?.default)}` : undefined).filter(x => x !== undefined).join(',\n')}
 }
 }`)
     }
@@ -101,26 +108,35 @@ function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
 
     return `
 export class Node {
+    private uid: number,
+    private links: Map<number,[Node,string,number][]> = new Map()  //Links of my output to...
+
     constructor(ctx: Map<number, Node>) {
         //Register the node in the context map.
+        this.uid = ctx.size + 1;
         ctx.set(ctx.size + 1, this);
     };
 
-    $$link(slot: number, value: unknown) {
+    //Link my input #slot to the output value.
+    protected $$link(slot: number, value: unknown) {
         //TODO: Implement linking.
+    }
+
+    protected $$compile(ctx: Map<number, Node>){
+
     }
 }
 
-class TNode<T> extends Node{}
-class TArgNode<T> extends Node{}
+class TNode<T> extends Node { }
+class TArgNode<T> extends Node { }
 
 //Class for terminal values
-export function $<T> (value:T){
+export function $<T>(value: T) {
     return new TNode(value) as T
 }
 
 //Class for terminal patterns (replaced later)
-export function $$<T> (value:T){
+export function $$<T>(value: T) {
     return new TArgNode(value) as T
 }
 
@@ -132,14 +148,14 @@ export type BOOLEAN = boolean;
 type ANY = 'ANY';
 ${[...types].map(x => `type ${$(x)} = '${$(x)}'`).join('\n')}
 export const Workflow = () => {
-    const ctx=new Map();
+    const ctx = new Map();
     return {
         ${pieces.join(',\n')},
-        $compile : async function (){
-            /*TODO*/
-        }
+    $compile: async function () {
+        /*TODO*/
     }
-}`
+}
+    } `
 
 }
 
