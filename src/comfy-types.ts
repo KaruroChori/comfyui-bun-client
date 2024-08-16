@@ -108,7 +108,7 @@ ${Object.entries(inputs).map((x, i) => `\t\t * @param opts.${x[0]}${x[1].metadat
 
     return `
 export class Node {
-    private uid: number,
+    private uid: number
     private links: Map<number,[Node,string,number][]> = new Map()  //Links of my output to...
 
     constructor(ctx: Map<number, Node>) {
