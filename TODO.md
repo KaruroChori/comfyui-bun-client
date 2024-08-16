@@ -1,8 +1,7 @@
 # Upcoming
 
-## Needed for release 0.1.5
+## Needed for release 0.1.7
 
-- [ ] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
 - [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.2.1
@@ -34,3 +33,7 @@
 
 - [x] Utility functions to automatically collect artifacts and upload resources.
 - [x] Add tests for the automatic functions
+
+## Needed for release 0.1.5
+
+- [x] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
