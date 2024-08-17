@@ -84,7 +84,7 @@ function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, basename =
         ${Object.entries(inputs).map((x, i) => `//set '${$(x[0])}'(value : ${TypeFromComfyUI(x[1].type)})  { super.$$link(${i}, value) } `).join('\n')}
 
         //Getters
-        ${Object.entries(outputs).map((x, i) => `get '${$(x[0])}'() : ${TypeFromComfyUI(x[1].type)} { return [this, '${$(x[0])}', ${i}]  as unknown as ${TypeFromComfyUI(x[1].type)}; }`).join('\n')}
+        ${Object.entries(outputs).map((x, i) => `get '${$(x[0])}'() : ${TypeFromComfyUI(x[1].type)} { return [this.uid.toString(), ${i}]  as unknown as ${TypeFromComfyUI(x[1].type)}; }`).join('\n')}
 
         /**
           * Constructor
@@ -95,19 +95,23 @@ ${Object.entries(inputs).map((x, i) => `\t\t * @param opts.${x[0]}${x[1].metadat
         }){
             super(ctx);
 
-            ${Object.entries(inputs).filter(x => x[1].required === true).map((x, i) => x[1].required ? `super.$$link(${i}, opts['${$(x[0])}'])` : `if(opts['${$(x[0])}']!==undefined) super.$$link(${i}, opts['${$(x[0])}'])`).join(';\n')}
+            ${Object.entries(inputs).filter(x => x[1].required === true).map((x, i) => x[1].required ? `super.$$link(${JSON.stringify($(x[0]))}, opts['${$(x[0])}'])` : `if(opts['${$(x[0])}']!==undefined) super.$$link(${JSON.stringify($(x[0]))}, opts['${$(x[0])}'])`).join(';\n')}
 }
 
         static defaults = {
     ${Object.entries(inputs).map(x => x[1].metadata?.default !== undefined ? `'${$(x[0])}':  ${JSON.stringify(x[1].metadata?.default)}` : undefined).filter(x => x !== undefined).join(',\n')}
 }
+        protected override $$type(){
+            return ${JSON.stringify(metadata.name)}
+        }
 }`)
+
     }
 
     //TODO: Collect and add all types
 
     return `
-import {Node, TNode, TArgNode, Compile} from "${basename ?? "comfyui-bun-client"}"
+import {Node, TNode, TArgNode} from "${basename ?? "comfyui-bun-client"}"
 
 export function dyn(x){return x as '@dyn'}
 type $dyn = '@dyn'
@@ -133,8 +137,8 @@ export const Workflow = () => {
     const ctx = new Map();
     return {
         ${pieces.join(',\n')},
-    $compile: async function () {
-        /*TODO*/
+    $compile: async function (client_id:string) {
+        return Node.CompileAll(ctx,client_id)
     }
 }
     } `

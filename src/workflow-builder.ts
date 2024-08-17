@@ -5,18 +5,29 @@ export const WorkflowSchema = t.Object({
         class_type: t.String(),
         inputs: t.Record(t.String(), t.Any())
     }, { additionalProperties: false })),
-    extra_data: t.Object({
-        extra_pnginfo: t.Object({
-            workflow: t.Object({
-                last_node_id: t.Integer(),
-                last_link_id: t.Integer(),
-                nodes: t.Array(t.Object({})),
-                links: t.Array(t.Tuple([t.Integer(), t.Integer(), t.Integer(), t.Integer(), t.Integer(), t.String()])),
-                groups: t.Array(t.Object({})),  //Schema TBD
-                config: t.Object({}),   //Schema TBD
-                extra: t.Object({}), //Just the the UI, ignore it.
-                version: t.Number() //Hardcoded to wotk with this specific revision.
-            })
-        })
-    })
+    extra_data: t.Optional(
+        t.Object({
+            extra_pnginfo: t.Object({
+                workflow: t.Object({
+                    last_node_id: t.Optional(t.Integer()),
+                    last_link_id: t.Optional(t.Integer()),
+                    nodes: t.Array(t.Object({})),
+                    links: t.Array(
+                        t.Tuple([
+                            t.Integer({ description: "ID" }),
+                            t.Integer({ description: "Starting Node" }),
+                            t.Integer({ description: "Output port" }),
+                            t.Integer({ description: "Ending node" }),
+                            t.Integer({ description: "Input port" }),
+                            t.String({ description: "Type" }),
+                        ]),
+                    ),
+                    groups: t.Optional(t.Array(t.Object({}))), //Schema TBD
+                    config: t.Optional(t.Object({})), //Schema TBD
+                    extra: t.Optional(t.Object({})), //Just the the UI, ignore it.
+                    version: t.Number(), //Hardcoded to work with this specific revision.
+                }),
+            }),
+        }),
+    )
 }, { additionalProperties: false })

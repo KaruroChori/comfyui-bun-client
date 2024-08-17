@@ -2,6 +2,7 @@
 
 import { sleep } from 'bun'
 import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
+import { workflow } from './workflow'
 
 {
     //Variable with a scope-contrained lifetime
@@ -13,7 +14,11 @@ import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
 
         console.log('Waiting for submission of prompt 1')
         {
-            //const wf = await client.schedule_job({ ...(await import("./assets/workflow-a.json")).default, client_id: client.uid }, [], [{ from: 10, to: (x) => `./tmp/asset-${x}.png` }], {});
+            const tmp = await workflow(client.uid)
+            console.log(JSON.stringify(tmp, undefined, 4))
+
+            const wf = await client.schedule_job(tmp.workflow, [], [{ from: tmp.outimage, to: (x) => `./tmp/asset-${x}.png` }], {});
+
         }
         console.log('Submission done for prompt 1')
 

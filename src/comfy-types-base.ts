@@ -2,30 +2,44 @@ import type { Static } from "@sinclair/typebox";
 import type { WorkflowSchema } from "./workflow-builder";
 
 export class Node {
-    private uid: number
-    private links: Map<number, [Node, string, number][]> = new Map()  //Links of my output to...
+    protected _uid: number
+    protected links: Record<string, unknown> = {}  //Links of my named inputs to...
 
     constructor(ctx: Map<number, Node>) {
         //Register the node in the context map.
-        this.uid = ctx.size + 1;
-        ctx.set(ctx.size + 1, this);
+        this._uid = ctx.size;
+        ctx.set(ctx.size, this);
     };
 
-    //Link my input #slot to the output value.
-    protected $$link(slot: number, value: unknown) {
-        //TODO: Implement linking.
+    get uid(): number {
+        return this._uid
     }
 
-    protected $$compile(ctx: Map<number, Node>) {
+    //Link my input #slot to the output value of an other node.
+    protected $$link(slot: string, value: unknown) {
+        this.links[slot] = value
+    }
 
+    protected $$type() { throw "not defined" }
+
+    protected $$compile() {
+        return {
+            "class_type": this.$$type(),
+            "inputs": this.links
+        }
+    }
+
+    static CompileAll(ctx: Map<number, Node>, client_id: string): Static<typeof WorkflowSchema> {
+        const entries = Array.from(ctx.entries()).map((x) => [x[0], x[1].$$compile()])
+        return {
+            client_id,
+            prompt: {
+                ...Object.fromEntries(entries)
+            }
+        }
     }
 }
 
-export function Compile(ctx: Map<number, Node>): Static<typeof WorkflowSchema> {
-    return {
-
-    }
-}
 
 export class TNode<T> extends Node { }
 export class TArgNode<T> extends Node { }
