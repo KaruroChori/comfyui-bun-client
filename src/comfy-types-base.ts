@@ -29,6 +29,9 @@ export class Node {
         }
     }
 
+    /**
+     * Mostly for internal use. Please use the workflow compile method instead.
+     */
     static CompileAll(ctx: Map<number, Node>, client_id: string): Static<typeof WorkflowSchema> {
         const entries = Array.from(ctx.entries()).map((x) => [x[0], x[1].$$compile()])
         return {
@@ -40,6 +43,3 @@ export class Node {
     }
 }
 
-
-export class TNode<T> extends Node { }
-export class TArgNode<T> extends Node { }

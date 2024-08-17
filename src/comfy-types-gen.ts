@@ -9,10 +9,11 @@
 import type { ComfyClient } from "./comfy-client"
 
 /**
+ * Convert the original json obtained from the ComfyUI backend into something less bad.
  * @param cfg The original comfy json
  * @returns A normalized version, since the original is awful
  */
-function NormalizeComfyJSON(cfg: Record<string, {
+export function NormalizeComfyJSON(cfg: Record<string, {
     input: { required?: [], optional?: [] },
     output: string | string[],
     output_name: string | string[],
@@ -51,12 +52,12 @@ function $(str: string | number) {
 }
 
 /**
- * 
- * @param cfg the entries to generate code from.
- * @param basename the package name for the client library. `comfyui-bun-client` by default.
- * @returns 
+ * Compile a normalized json from the comfyui backend into a string representing the final code.
+ * @param cfg all entries to generate the interface code from.
+ * @param basename the package name for this client library. `comfyui-bun-client` by default.
+ * @returns string encoded typescript sourcecode implementing the interface.
  */
-function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, basename = undefined): string {
+export function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, basename = undefined): string {
     const types: Set<string> = new Set()
     const pieces = []
 
@@ -108,23 +109,11 @@ ${Object.entries(inputs).map((x, i) => `\t\t * @param opts.${x[0]}${x[1].metadat
 
     }
 
-    //TODO: Collect and add all types
-
     return `
-import {Node, TNode, TArgNode} from "${basename ?? "comfyui-bun-client"}"
+import {Node} from "${basename ?? "comfyui-bun-client"}"
 
 export function dyn(x){return x as '@dyn'}
 type $dyn = '@dyn'
-
-//Class for terminal values
-export function $<T>(value: T) {
-    return new TNode(value) as T
-}
-
-//Class for terminal patterns (replaced later)
-export function $$<T>(value: T) {
-    return new TArgNode(value) as T
-}
 
 export type STRING = string;
 export type INT<min = void, max = void> = number;
@@ -146,10 +135,10 @@ export const Workflow = () => {
 }
 
 /**
- * 
- * @param client 
- * @param filename 
- * @param pkg 
+ * Generate the ts file mapping all nodes from ComfyUI into proper typescript
+ * @param client the active connection from which to derive the interface
+ * @param filename the target filename
+ * @param pkg the name of the package for this library in the user application. If undefined the one from the original package.json is assumed
  */
 export async function ComfyJSONToTypescript(client: ComfyClient, filename: string, pkg = undefined) {
     const tmp = await client.object_info()

@@ -3,8 +3,9 @@ export const WorkflowSchema = t.Object({
     client_id: t.String(),
     prompt: t.Record(t.String(), t.Object({
         class_type: t.String(),
-        inputs: t.Record(t.String(), t.Any())
+        inputs: t.Record(t.String(), t.Union([t.Boolean(), t.String(), t.Number(), t.Tuple([t.String(), t.Integer()], { description: "Arc" })]))
     }, { additionalProperties: false })),
+    //This section is only present for graphs for which we want to provide/preserve the UI support in the official comfy web ui
     extra_data: t.Optional(
         t.Object({
             extra_pnginfo: t.Object({
@@ -22,9 +23,9 @@ export const WorkflowSchema = t.Object({
                             t.String({ description: "Type" }),
                         ]),
                     ),
-                    groups: t.Optional(t.Array(t.Object({}))), //Schema TBD
-                    config: t.Optional(t.Object({})), //Schema TBD
-                    extra: t.Optional(t.Object({})), //Just the the UI, ignore it.
+                    groups: t.Array(t.Object({})), //Schema TBD
+                    config: t.Object({}), //Schema TBD
+                    extra: t.Object({}), //Just the the UI, ignore it.
                     version: t.Number(), //Hardcoded to work with this specific revision.
                 }),
             }),
