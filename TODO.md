@@ -1,21 +1,9 @@
 # Upcoming
 
-## Needed for release 0.1.7
+## Needed for release 0.2.3
 
+- [ ] Document workflow generation, test and better examples
 - [ ] Better error handling when workflows fail (and related tests)
-
-## Needed for release 0.2.1
-
-- [x] (partial) Typebox schemas for workflows+prompts
-- [ ] A complete workflow builder
-  - [x] Get node info from the backend
-  - [x] JSON preprocessing
-  - [x] Code generation (static types)
-  - [x] Generated JSDOC comment headers
-  - [ ] Runtime compile operation
-    - [x] Build DAG
-    - [ ] Generate intermediate JSON
-    - [ ] Compile it into a comfyui compatible workflow
 
 ## Needed for release 0.3.x
 
@@ -37,3 +25,16 @@
 ## Needed for release 0.1.5
 
 - [x] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
+
+## Needed for release 0.2.1
+
+- [x] (partial) Typebox schemas for workflows+prompts
+- [ ] A complete workflow builder
+  - [x] Get node info from the backend
+  - [x] JSON preprocessing
+  - [x] Code generation (static types)
+  - [x] Generated JSDOC comment headers
+  - [ ] Runtime compile operation
+    - [x] Build DAG
+    - [x] ~~Generate intermediate JSON~~ no longer needed
+    - [x] Compile it into a comfyui compatible workflow
