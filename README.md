@@ -23,6 +23,8 @@ bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.1
 
 ### Minimal example
 
+This will connect to a ComfyUI backend in debug mode, and ask for the system stats to be provided:
+
 ```ts
 import {ComfyClient} from "comfyui-bun-client"
 {
@@ -40,7 +42,11 @@ You can find more complex usage scenarios of this library documented in `./examp
 
 ### Define a custom workflow in TS
 
-[Check here.](./docs/custom-workflows.md)
+Workflows can be directly written in typescript. Type hints are supported and `tsc` can be used to statically check if your custom workflow is (likely) sound.  
+[Check here](./docs/custom-workflows.md) for the relevant documentation.
+
+Unlike the UI which uses groups, you can use functions or classes to define any reusable sub-workflow you want.  
+[This repository](https://github.com/KaruroChori/comfyui-ts-workflows) contains some which I designed for my specific applications, but you too might find them helpful.
 
 ## Information for developers
 

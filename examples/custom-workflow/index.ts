@@ -2,7 +2,7 @@
 
 import { sleep } from 'bun'
 import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
-import { workflow } from './workflow'
+
 
 {
     //Variable with a scope-contrained lifetime
@@ -14,6 +14,7 @@ import { workflow } from './workflow'
 
         console.log('Waiting for submission of prompt 1')
         {
+            const workflow = (await import("./workflow")).default
             const tmp = await workflow(client.uid)
             console.log(JSON.stringify(tmp, undefined, 4))
 

@@ -122,8 +122,8 @@ export type BOOLEAN = boolean;
 
 type ANY = 'ANY';
 ${[...types].map(x => `type ${$(x)} = '${$(x)}'`).join('\n')}
-export const Workflow = () => {
-    const ctx = new Map();
+export const Workflow = (_ctx?: Map<number,Node>) => {
+    const ctx = _ctx??new Map();
     return {
         ${pieces.join(',\n')},
     $compile: async function (client_id:string) {

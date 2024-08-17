@@ -1,6 +1,6 @@
 import { Workflow, dyn } from "./interface.ts"
 
-export const workflow = async (client_id: string) => {
+export default async (client_id: string) => {
 
     const comfy = Workflow();
 
