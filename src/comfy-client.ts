@@ -554,7 +554,7 @@ export class ComfyClient {
      * @returns A handle for the newly scheduled job.
      */
     async schedule_job(workflow: unknown,
-        infiles: { from: string; to?: string; tmp?: boolean; mask?: boolean }[],
+        infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
         outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string; }[],
         cb: {
             onStart?: () => (void | Promise<void>)
@@ -575,7 +575,8 @@ export class ComfyClient {
         for (const file of infiles) {
             const tmp = (file.mask ?? true) ?
                 await this.upload_image(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' }) :
-                await this.upload_mask(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input', original_ref: {} })  //TODO: I need to fix this helper (are masks even relevant for this?)
+                undefined
+            //await this.upload_mask(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input', original_ref: { filename: basename(file.original), subfolder: file.to ? dirname(file.original) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' } })  //TODO: I need to fix this helper (are masks even relevant for this?)
             if (this.#debug) console.log(`Loaded ${file.from}`, tmp)
         }
 

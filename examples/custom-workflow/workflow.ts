@@ -1,8 +1,11 @@
 import { Workflow, dyn } from "./interface.ts"
 
-const comfy = Workflow();
+export const workflow = () => {
 
-const nodeA = new comfy.LoadImage({ image: dyn("QSCF8096.JPGs") })
-const nodeB = new comfy.PreviewImage({ images: nodeA.IMAGE })
+    const comfy = Workflow();
 
-export const workflow = comfy.$compile()
+    const nodeA = new comfy.LoadImage({ image: dyn("QSCF8096.JPGs") })
+    const nodeB = new comfy.PreviewImage({ images: nodeA.IMAGE })
+
+    return comfy.$compile();
+}
