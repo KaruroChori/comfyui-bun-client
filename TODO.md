@@ -1,6 +1,6 @@
 # Upcoming
 
-## Needed for release 0.2.3
+## Needed for release 0.2.5
 
 - [ ] Document workflow generation
 - [ ] Add tests for the workflow building
@@ -40,3 +40,8 @@
     - [x] Build DAG
     - [x] ~~Generate intermediate JSON~~ no longer needed
     - [x] Compile it into a comfyui compatible workflow
+
+## Needed for release 0.2.3
+
+- [x] Fixes to the default values in workflows.
+- [x] Make workflows composable.
