@@ -2,13 +2,15 @@
 
 ## Needed for release 0.2.3
 
-- [ ] Document workflow generation, test and better examples
+- [ ] Document workflow generation
+- [ ] Add tests for the workflow building
+- [ ] Improve examples and the related documentation
 - [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.3.x
 
 - [ ] Add support for client-side certificates to authorize the connection with comfyui (needed for some semi-public configurations)
-- [ ] Add interpolation support for compiled workflows. Needed to generate many variants fast
+- [ ] Add interpolation support for pre-compiled workflows. Needed to generate many variants fast
 
 # Older releases
 
@@ -29,12 +31,12 @@
 ## Needed for release 0.2.1
 
 - [x] (partial) Typebox schemas for workflows+prompts
-- [ ] A complete workflow builder
+- [x] A complete workflow builder
   - [x] Get node info from the backend
   - [x] JSON preprocessing
   - [x] Code generation (static types)
   - [x] Generated JSDOC comment headers
-  - [ ] Runtime compile operation
+  - [x] Runtime compile operation
     - [x] Build DAG
     - [x] ~~Generate intermediate JSON~~ no longer needed
     - [x] Compile it into a comfyui compatible workflow

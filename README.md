@@ -11,7 +11,7 @@ It consists of:
 
 - A mostly 1-to-1 wrapper for all the REST endpoints defined by ComfyUI.
 - An abstraction for **jobs**, with custom callbacks and several utilities to simplify their deployment and artifact collection.
-- (WIP) A workflow builder, allowing you to parametrize JSON workflows, or to write your own in typescript instead of interpolating those created via the UI.
+- (beta) A workflow builder, allowing you to parametrize JSON workflows, or to write your own in typescript instead of interpolating those created via the UI.
 
 ## Quick start
 
