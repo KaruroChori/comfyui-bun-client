@@ -1,7 +1,7 @@
 //TODO: To write for 0.2.x
 
 import { sleep } from 'bun'
-import { ComfyClient, ComfyJSONToTypescript } from '../../index'
+import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
 
 {
     //Variable with a scope-contrained lifetime

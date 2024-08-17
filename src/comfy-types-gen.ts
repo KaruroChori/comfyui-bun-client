@@ -50,13 +50,13 @@ function $(str: string | number) {
     else return str.replaceAll("'", '\\\'')
 }
 
-
 /**
  * 
- * @param cfg 
+ * @param cfg the entries to generate code from.
+ * @param basename the package name for the client library. `comfyui-bun-client` by default.
  * @returns 
  */
-function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
+function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, basename = undefined): string {
     const types: Set<string> = new Set()
     const pieces = []
 
@@ -68,7 +68,7 @@ function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>): string {
             else return type;
         }
         else {
-            if (type.length !== 0) return type.map(x => `'${$(x)}'`).join('|')
+            if (type.length !== 0) return `${type.map(x => `'${$(x)}'`).join('|')}| $dyn`
             else return 'void';
         }
     }
@@ -107,28 +107,10 @@ ${Object.entries(inputs).map((x, i) => `\t\t * @param opts.${x[0]}${x[1].metadat
     //TODO: Collect and add all types
 
     return `
-export class Node {
-    private uid: number
-    private links: Map<number,[Node,string,number][]> = new Map()  //Links of my output to...
+import {Node, TNode, TArgNode, Compile} from "${basename ?? "comfyui-bun-client"}"
 
-    constructor(ctx: Map<number, Node>) {
-        //Register the node in the context map.
-        this.uid = ctx.size + 1;
-        ctx.set(ctx.size + 1, this);
-    };
-
-    //Link my input #slot to the output value.
-    protected $$link(slot: number, value: unknown) {
-        //TODO: Implement linking.
-    }
-
-    protected $$compile(ctx: Map<number, Node>){
-
-    }
-}
-
-class TNode<T> extends Node { }
-class TArgNode<T> extends Node { }
+export function dyn(x){return x as '@dyn'}
+type $dyn = '@dyn'
 
 //Class for terminal values
 export function $<T>(value: T) {
@@ -159,10 +141,16 @@ export const Workflow = () => {
 
 }
 
-export async function ComfyJSONToTypescript(client: ComfyClient, filename: string) {
+/**
+ * 
+ * @param client 
+ * @param filename 
+ * @param pkg 
+ */
+export async function ComfyJSONToTypescript(client: ComfyClient, filename: string, pkg = undefined) {
     const tmp = await client.object_info()
     const normal = NormalizeComfyJSON(tmp)
-    const compiled = CompileComfyJSON(normal)
+    const compiled = CompileComfyJSON(normal, pkg)
 
     //await Bun.write(`${ filename }.origin.json`, JSON.stringify(tmp, undefined, 4))
     //await Bun.write(filename + '.json', JSON.stringify(normal, undefined, 4))

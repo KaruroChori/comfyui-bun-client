@@ -1,5 +1,5 @@
 import { sleep } from 'bun'
-import { ComfyClient } from '../../index'
+import { ComfyClient } from 'comfyui-bun-client'
 
 {
     //Variable with a scope-contrained lifetime

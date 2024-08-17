@@ -575,7 +575,7 @@ export class ComfyClient {
         for (const file of infiles) {
             const tmp = (file.mask ?? true) ?
                 await this.upload_image(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' }) :
-                await this.upload_mask(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' })
+                await this.upload_mask(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input', original_ref: {} })  //TODO: I need to fix this helper (are masks even relevant for this?)
             if (this.#debug) console.log(`Loaded ${file.from}`, tmp)
         }
 
