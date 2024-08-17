@@ -2,17 +2,17 @@ import type { Static } from "@sinclair/typebox";
 import type { WorkflowSchema } from "./workflow-builder";
 
 export class Node {
-    protected _uid: number
+    protected uid: number
     protected links: Record<string, unknown> = {}  //Links of my named inputs to...
 
     constructor(ctx: Map<number, Node>) {
         //Register the node in the context map.
-        this._uid = ctx.size;
+        this.uid = ctx.size;
         ctx.set(ctx.size, this);
     };
 
-    get uid(): number {
-        return this._uid
+    get $uid(): number {
+        return this.uid
     }
 
     //Link my input #slot to the output value of an other node.

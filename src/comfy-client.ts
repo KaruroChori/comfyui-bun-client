@@ -566,6 +566,7 @@ export class ComfyClient {
     ) {
         //Only this function is checking the workflow against the schema. Raw call to post_prompt are not.
         if (!Value.Check(WorkflowSchema, workflow)) {
+            for (const err of Value.Errors(WorkflowSchema, workflow)) console.error(err);
             throw new Error("Schema validation for workflow failed!");
         }
 

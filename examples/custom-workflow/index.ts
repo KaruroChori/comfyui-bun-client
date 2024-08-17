@@ -1,8 +1,6 @@
-//TODO: To write for 0.2.x
-
 import { sleep } from 'bun'
 import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
-
+import BaseGen from "comfyui-bun-client/workflows/base-gen"
 
 {
     //Variable with a scope-contrained lifetime
@@ -18,11 +16,21 @@ import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
             const tmp = await workflow(client.uid)
             console.log(JSON.stringify(tmp, undefined, 4))
 
-            const wf = await client.schedule_job(tmp.workflow, [], [{ from: tmp.outimage, to: (x) => `./tmp/asset-${x}.png` }], {});
+            const wf = await client.schedule_job(tmp.workflow, [], [{ from: tmp.outimage, to: (x) => `./tmp/asset-1-${x}.png` }], {});
 
         }
         console.log('Submission done for prompt 1')
 
+        console.log('Waiting for submission of prompt 2')
+        {
+            const workflow = (await BaseGen({ positive: "Banana", model: "Crystal-PR_rc2.safetensors" }))
+            const tmp = await workflow.workflow.$compile(client.uid)
+            console.log(JSON.stringify(tmp, undefined, 4))
+
+            const wf = await client.schedule_job(tmp, [], [{ from: workflow.outimage, to: (x) => `./tmp/asset-2-${x}.png` }], {});
+
+        }
+        console.log('Submission done for prompt 2')
     }
     catch (e) {
         console.log(e)

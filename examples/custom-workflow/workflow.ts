@@ -7,5 +7,5 @@ export default async (client_id: string) => {
     const nodeA = new comfy.LoadImage({ image: dyn("QSCF8096.JPG") })
     const nodeB = new comfy.PreviewImage({ images: nodeA.IMAGE })
 
-    return { workflow: await comfy.$compile(client_id), outimage: nodeB.uid };
+    return { workflow: await comfy.$compile(client_id), outimage: nodeB.$uid };
 }

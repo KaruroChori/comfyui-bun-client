@@ -80,23 +80,26 @@ export function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, bas
      * ${metadata.display_name} from ${metadata.category}
      * @desc ${metadata.description}
     */
-    '${metadata.name}' : class extends Node{
+    ${JSON.stringify(metadata.name)} : class extends Node{
         //Setters
         ${Object.entries(inputs).map((x, i) => `//set '${$(x[0])}'(value : ${TypeFromComfyUI(x[1].type)})  { super.$$link(${i}, value) } `).join('\n')}
 
         //Getters
-        ${Object.entries(outputs).map((x, i) => `get '${$(x[0])}'() : ${TypeFromComfyUI(x[1].type)} { return [this.uid.toString(), ${i}]  as unknown as ${TypeFromComfyUI(x[1].type)}; }`).join('\n')}
+        ${Object.entries(outputs).map((x, i) => `get '${$(x[0])}'() : ${TypeFromComfyUI(x[1].type)} { return [this.$uid.toString(), ${i}]  as unknown as ${TypeFromComfyUI(x[1].type)}; }`).join('\n')}
 
         /**
           * Constructor
 ${Object.entries(inputs).map((x, i) => `\t\t * @param opts.${x[0]}${x[1].metadata?.default ? ` default: ${JSON.stringify(x[1].metadata.default)}` : ""}${x[1].metadata?.min ? ` max: ${x[1].metadata.max}` : ""}${x[1].metadata?.min ? ` min: ${x[1].metadata.min}` : ""}${x[1].metadata?.step ? ` step: ${x[1].metadata.step}` : ""}`).join('\n')}}
         */
         constructor(opts:{
-            ${Object.entries(inputs).map(x => `'${$(x[0])}'${x[1].required ? '' : '?'}: ${TypeFromComfyUI(x[1].type)}`).join(',')}
+            ${Object.entries(inputs).map(x => `'${$(x[0])}'${(x[1].required && x[1].metadata?.default === undefined) ? '' : '?'}: ${TypeFromComfyUI(x[1].type)}`).join(',')}
         }){
             super(ctx);
 
-            ${Object.entries(inputs).filter(x => x[1].required === true).map((x, i) => x[1].required ? `super.$$link(${JSON.stringify($(x[0]))}, opts['${$(x[0])}'])` : `if(opts['${$(x[0])}']!==undefined) super.$$link(${JSON.stringify($(x[0]))}, opts['${$(x[0])}'])`).join(';\n')}
+            ${Object.entries(inputs).map(
+            (x, i) =>
+                `super.$$link(${JSON.stringify($(x[0]))}, opts['${$(x[0])}']${x[1].metadata?.default !== undefined ? `??tmp[${JSON.stringify(metadata.name)}].defaults['${$(x[0])}']` : ""})`,
+        ).join('\n')}
 }
 
         static defaults = {
@@ -112,7 +115,7 @@ ${Object.entries(inputs).map((x, i) => `\t\t * @param opts.${x[0]}${x[1].metadat
     return `
 import {Node} from "${basename ?? "comfyui-bun-client"}"
 
-export function dyn(x){return x as '@dyn'}
+export function dyn(x: unknown){return x as '@dyn'}
 type $dyn = '@dyn'
 
 export type STRING = string;
@@ -124,12 +127,14 @@ type ANY = 'ANY';
 ${[...types].map(x => `type ${$(x)} = '${$(x)}'`).join('\n')}
 export const Workflow = (_ctx?: Map<number,Node>) => {
     const ctx = _ctx??new Map();
-    return {
+    const tmp = {
         ${pieces.join(',\n')},
-    $compile: async function (client_id:string) {
-        return Node.CompileAll(ctx,client_id)
+        $compile: async function (client_id:string) {
+            return Node.CompileAll(ctx,client_id)
+        }
     }
-}
+
+    return tmp;
     } `
 
 }

@@ -20,5 +20,8 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.32.35"
+  },
+  "scripts": {
+    "gen-interface": "bun run ./scripts/gen-interface.ts"
   }
 }
