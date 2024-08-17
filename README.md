@@ -18,7 +18,7 @@ It consists of:
 Add this library to your `package.json` (make sure to select the relevant release, as this readme could be outdated):
 
 ```sh
-bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.1
+bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.3
 ```
 
 ### Minimal example
