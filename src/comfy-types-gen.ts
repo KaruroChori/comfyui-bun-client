@@ -113,6 +113,8 @@ ${Object.entries(inputs).map((x, i) => `\t\t * @param opts.${x[0]}${x[1].metadat
     }
 
     return `
+//File automatically generated, please don't change it manually.
+
 import {Node} from "${basename ?? "comfyui-bun-client"}"
 
 export function dyn(x: unknown){return x as '@dyn'}
@@ -125,6 +127,7 @@ export type BOOLEAN = boolean;
 
 type ANY = 'ANY';
 ${[...types].map(x => `type ${$(x)} = '${$(x)}'`).join('\n')}
+
 export const Workflow = (_ctx?: Map<number,Node>) => {
     const ctx = _ctx??new Map();
     const tmp = {

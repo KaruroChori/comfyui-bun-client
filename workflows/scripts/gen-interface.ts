@@ -1,4 +1,4 @@
-import { ComfyClient, ComfyJSONToTypescript } from '../index'
+import { ComfyClient, ComfyJSONToTypescript } from '../../index'
 
 
 {

@@ -1,10 +1,9 @@
 {
-  "name": "comfyui-bun-client",
+  "name": "comfyui-bun-workflows",
   "module": "index.ts",
   "type": "module",
-  "license": "BSD-3-Clause",
-  "version": "0.2.4",
-  "description": "Wrapper for the REST endpoints of a comfyui instance & some quality of life utils.",
+  "license": "UNLICENSED",
+  "description": "Basic workflows",
   "author": {
     "name": "karurochari",
     "url": "https://karurochari.com"
@@ -18,7 +17,8 @@
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
-  "dependencies": {
-    "@sinclair/typebox": "^0.32.35"
+  "dependencies": {},
+  "scripts": {
+    "gen-interface": "bun run ./scripts/gen-interface.ts"
   }
 }

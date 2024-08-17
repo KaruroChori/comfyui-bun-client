@@ -1,6 +1,5 @@
 import { sleep } from 'bun'
 import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
-import BaseGen from "comfyui-bun-client/workflows/base-gen"
 
 {
     //Variable with a scope-contrained lifetime
@@ -12,7 +11,7 @@ import BaseGen from "comfyui-bun-client/workflows/base-gen"
 
         console.log('Waiting for submission of prompt 1')
         {
-            const workflow = (await import("./workflow")).default
+            const workflow = (await import("./workflows/complete")).default
             const tmp = await workflow(client.uid)
             console.log(JSON.stringify(tmp, undefined, 4))
 
@@ -23,7 +22,8 @@ import BaseGen from "comfyui-bun-client/workflows/base-gen"
 
         console.log('Waiting for submission of prompt 2')
         {
-            const workflow = (await BaseGen({ positive: "Banana", model: "Crystal-PR_rc2.safetensors" }))
+            const file = (await import("./workflows/composable")).default
+            const workflow = (await file({ positive: "Banana", model: "Crystal-PR_rc2.safetensors" }))
             const tmp = await workflow.workflow.$compile(client.uid)
             console.log(JSON.stringify(tmp, undefined, 4))
 

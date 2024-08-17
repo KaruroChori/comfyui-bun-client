@@ -1,4 +1,4 @@
-import { Workflow, dyn } from "./interface.ts"
+import { Workflow, dyn } from "../interface.ts"
 
 export default async (client_id: string) => {
 
