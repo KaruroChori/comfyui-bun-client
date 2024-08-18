@@ -10,7 +10,7 @@ It is specifically designed for headless operations and automation. It features:
 
 - A mostly 1-to-1 wrapper for all the REST endpoints defined by ComfyUI.
 - An abstraction for **jobs** with customizable callbacks over their lifetime.
-- Utilities to simplify deployments, assests used for generation and the artifact collection.
+- Utilities to simplify deployments, assets used for generation and the artifact collection.
 - (beta) A workflow builder, to generate new workflows directly in typescript with hints and static type checking.
 
 ## Quick start
@@ -49,13 +49,13 @@ Workflows can be directly written in typescript.
 Type hints are supported and `tsc` can be used to statically check if your custom workflow is (likely) sound.  
 [Check here](./docs/custom-workflows.md) for the relevant documentation & examples.
 
-Unlike the main UI based on [litegraph](https://github.com/jagenjo/litegraph.js) which uses groups to organize complex workflows, as it is just ts code you can freely structure components as functions or classes.  
+Unlike the main UI based on [litegraph](https://github.com/jagenjo/litegraph.js) which uses groups to organize complex workflows, as it is just TS code you can freely structure components as functions or classes.  
 You might even be able to bind some react-like library and write workflows as `jsx` files, but I have not explored this option.  
-[This repository](https://github.com/KaruroChori/comfyui-ts-workflows) has some reusable components I designe for my own applications, but you too might find them useful.
+[This repository](https://github.com/KaruroChori/comfyui-ts-workflows) has some reusable components I designed for my own applications, but you too might find them useful.
 
 ## Information for developers
 
-If you want to contribute to this project or you need more details about the implementation, I wrote some notes [here](./docs/developers.md).
+If you want to contribute to this project, or you need more details about the implementation, I wrote some notes [here](./docs/developers.md).
 
 ## Milestones
 
