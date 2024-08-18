@@ -1,4 +1,5 @@
-// Code generation from the workflow JSON file.
+// Code generation from the workflow JSON file. This code is very messy and hopefully it will never be touched again.
+
 import type { Static } from "@sinclair/typebox"
 import type { WorkflowSchema } from "./comfy-types-base"
 
@@ -26,12 +27,12 @@ export function GenerateTSFromJson(json: Static<typeof WorkflowSchema>, base = '
         done.add(nodeN)
     }
 
-    function resolveArc(value: number | string | boolean | [string, number]) {
-        if (typeof value !== 'object') return JSON.stringify(value)
+    function resolveArc(value: number | string | boolean | null | undefined | [string, number]) {
+        if (typeof value !== 'object' || value === null || value === undefined) return JSON.stringify(value)
         else {
             const val = json.extra_data?.extra_pnginfo.workflow.nodes.find(x => x.id === Number.parseInt(value[0]))?.outputs[value[1]]
             resolveNode(Number.parseInt(value[0]))
-            return `node_${value[0]}[${JSON.stringify(val.name)}]`;
+            return `node_${value[0]}[${JSON.stringify(val?.name)}]`;
         }
     }
 

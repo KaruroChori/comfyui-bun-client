@@ -59,7 +59,16 @@ export const WorkflowSchema = t.Object({
                 workflow: t.Object({
                     last_node_id: t.Optional(t.Integer()),
                     last_link_id: t.Optional(t.Integer()),
-                    nodes: t.Array(t.Object({})),
+                    nodes: t.Array(t.Object({
+                        id: t.Integer(),
+                        type: t.String(),
+                        inputs: t.Array(t.Object({})),
+                        outputs: t.Array(t.Object({
+                            name: t.String(),
+                            type: t.String(),
+                            links: t.Array(t.Integer()),
+                        }))
+                    })),
                     links: t.Array(
                         t.Tuple([
                             t.Integer({ description: "ID" }),
