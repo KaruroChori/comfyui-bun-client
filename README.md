@@ -20,7 +20,7 @@ To use `comfyui-bun-client` you just need to add it to your `package.json`.
 Make sure you are selecting the latest version available as this readme file might be outdated:
 
 ```sh
-bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.3
+bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.5
 ```
 
 There is no plan to distribute this package via `npm`. Any version which might pop up there is not endorsed.
