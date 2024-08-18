@@ -3,12 +3,11 @@
 ## Needed for release 0.2.5
 
 - [ ] Add helper to convert a JSON workflow in its ts equivalent.
-- [ ] Add tests for the workflow building
 - [x] Improve examples and the related documentation
-- [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.2.7
 
+- [ ] Add tests for the workflow building
 - [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.3.x
