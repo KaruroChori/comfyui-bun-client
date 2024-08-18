@@ -6,7 +6,7 @@ import { sleep } from "bun";
 import { BunFileToFile } from "./utils";
 import { basename, dirname } from "node:path"
 import type { Static } from "@sinclair/typebox";
-import { WorkflowSchema } from "./workflow-builder";
+import { WorkflowSchema } from "./comfy-types-base";
 import { Value } from "@sinclair/typebox/value";
 
 /**

@@ -4,7 +4,7 @@
 
 
 //NOTICE: Make sure the generated code is based on escaped variables.
-//Symbols like `'` or `"` in several of the json fields would result in generation bugs.
+//Symbols like `'` or `"` in several of the json fields might result in generation bugs as they have not been always properly handled.
 
 import type { ComfyClient } from "./comfy-client"
 

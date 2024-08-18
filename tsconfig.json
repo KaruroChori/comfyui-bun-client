@@ -22,6 +22,11 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": false,
+
+    "paths": {
+      "comfyui-bun-client/*": ["./*"],
+      "comfyui-bun-client": ["./"]
+    }
   }
 }
