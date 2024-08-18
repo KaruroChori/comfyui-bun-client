@@ -12,6 +12,7 @@ It is specifically designed for headless operations and automation. It features:
 - An abstraction for **jobs** with customizable callbacks over their lifetime.
 - Utilities to simplify deployments, assets used for generation and the artifact collection.
 - (beta) A workflow builder, to generate new workflows directly in typescript with hints and static type checking.
+- (beta) A code generator that allows to take normal ComfyUI workflows and convert them into ts code.
 
 ## Quick start
 
