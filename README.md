@@ -41,7 +41,7 @@ There is a small set of examples provided as part of this repository in `./examp
 
 ### Run a full sequence of jobs
 
-[Check here.](./docs/run-jobs.md)
+[Check here](./docs/run-jobs.md).
 
 ### Define a custom workflow in TS
 
@@ -50,7 +50,7 @@ Type hints are supported and `tsc` can be used to statically check if your custo
 [Check here](./docs/custom-workflows.md) for the relevant documentation & examples.
 
 Unlike the main UI based on [litegraph](https://github.com/jagenjo/litegraph.js) which uses groups to organize complex workflows, as it is just ts code you can freely structure components as functions or classes.  
-You might even be able to bind some react-like library and write workflows as `jsx` files, but I have not explored this option.
+You might even be able to bind some react-like library and write workflows as `jsx` files, but I have not explored this option.  
 [This repository](https://github.com/KaruroChori/comfyui-ts-workflows) has some reusable components I designe for my own applications, but you too might find them useful.
 
 ## Information for developers
