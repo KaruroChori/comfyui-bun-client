@@ -1,10 +1,5 @@
 # Upcoming
 
-## Needed for release 0.2.5
-
-- [ ] Add helper to convert a JSON workflow in its ts equivalent.
-- [x] Improve examples and the related documentation
-
 ## Needed for release 0.2.7
 
 - [ ] Add tests for the workflow building
@@ -48,3 +43,8 @@
 
 - [x] Fixes to the default values in workflows.
 - [x] Make workflows composable.
+
+## Needed for release 0.2.5
+
+- [x] Add helper to convert a JSON workflow in its ts equivalent.
+- [x] Improve examples and the related documentation

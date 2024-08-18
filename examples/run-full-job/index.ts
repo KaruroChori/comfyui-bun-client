@@ -7,8 +7,7 @@ import { ComfyClient, GenerateTSFromJson } from 'comfyui-bun-client'
 
     try {
         const workflow = { ...(await import("./workflows/full.json")).default, client_id: client.uid }
-        // biome-ignore lint/suspicious/noExplicitAny: Sadly the automatic importer is messing up type for JSON from arcs. I will need to find a fix to that.
-        console.log(GenerateTSFromJson(workflow as any))
+        //console.log(GenerateTSFromJson(workflow as any))
         console.log('Waiting for prompt 1 to submit')
         {
             const wf = await client.schedule_job(workflow, [], [{ from: 10, to: (x) => `./tmp/asset-${x}.png` }], {});
