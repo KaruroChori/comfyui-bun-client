@@ -161,6 +161,7 @@ export class ComfyClient {
 
     /**
      * @returns Available embeddings from ComfyUI
+     * @deprecated This function has been de-facto replaced by models("embeddings") on modern comfy instances
      */
     async embeddings() {
         return await (
@@ -172,6 +173,22 @@ export class ComfyClient {
             )
         ).json()
     }
+
+    /**
+     * @returns Available embeddings from ComfyUI
+     * @deprecated This function has been de-facto replaced by models("embeddings") on modern comfy instances
+     */
+    async models(type:string) {
+        return await (
+            await fetch(
+                `http${this.#secure ? "s" : ""}://${this.#endpoint}/models/${type}?${new URLSearchParams({
+                    clientId: this.#uid,
+                }).toString()}`,
+                { method: "GET" },
+            )
+        ).json()
+    }
+
 
     /**
      * @returns Listing all extensions installed on a ComfyUI instance

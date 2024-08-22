@@ -1,8 +1,9 @@
 # Upcoming
 
-## Needed for release 0.2.7
+## Needed for release 0.2.9
 
 - [ ] Add tests for the workflow building
+- [ ] Add tests for ts code gen from workflow
 - [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.3.x
@@ -48,3 +49,7 @@
 
 - [x] Add helper to convert a JSON workflow in its ts equivalent.
 - [x] Improve examples and the related documentation
+
+## Needed for release 0.2.7
+
+- [x] Added support for `models/type` from updated comfy backends
