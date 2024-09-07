@@ -9,7 +9,7 @@ bun install
 ```
 
 The master branch is used to store the mainline in-dev version. Stable releases are defined by tags.
-As for versioning, the last number for any public release is odd. Even numbers are used internally during development only. For example `v0.1.6` is the in-dev version for `v0.1.5`.  
+As for versioning, the last number for any public release is odd. Even numbers are used internally during development only. For example `v0.1.6` is the in-dev version for `v0.1.7`.  
 Breaking changes are generally performed on major releases only **after** major 1. For `v0.x.x` every version might be breaking compatibility with the previous one.
 
 ## Test suite
