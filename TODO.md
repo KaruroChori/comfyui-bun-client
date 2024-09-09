@@ -1,12 +1,5 @@
 # Upcoming
 
-## Needed for release 0.2.9
-
-- [x] CLI via npx/bunx
-  - [x] Support for generating comfy types to file (expose comfy-types-gen)
-  - [x] Support for generating workflow code from image (expose comfy-code-gen)
-  - [x] Document new features
-
 ## Needed for release 0.2.11
 
 - [ ] Optional support to add metadata in the final artifacts if so desired.
@@ -21,19 +14,26 @@
 
 # Older releases
 
-## Needed for release 0.1.2
+## Needed for release 0.2.9
 
-- [x] JSDOC for code which has been written so far
-- [x] A minimal test suite
+- [x] CLI via npx/bunx
+  - [x] Support for generating comfy types to file (expose comfy-types-gen)
+  - [x] Support for generating workflow code from image (expose comfy-code-gen)
+  - [x] Document new features
 
-## Needed for release 0.1.3
+## Needed for release 0.2.7
 
-- [x] Utility functions to automatically collect artifacts and upload resources.
-- [x] Add tests for the automatic functions
+- [x] Added support for `models/type` from updated comfy backends
 
-## Needed for release 0.1.5
+## Needed for release 0.2.5
 
-- [x] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
+- [x] Add helper to convert a JSON workflow in its ts equivalent.
+- [x] Improve examples and the related documentation
+
+## Needed for release 0.2.3
+
+- [x] Fixes to the default values in workflows.
+- [x] Make workflows composable.
 
 ## Needed for release 0.2.1
 
@@ -48,16 +48,16 @@
     - [x] ~~Generate intermediate JSON~~ no longer needed
     - [x] Compile it into a comfyui compatible workflow
 
-## Needed for release 0.2.3
+## Needed for release 0.1.5
 
-- [x] Fixes to the default values in workflows.
-- [x] Make workflows composable.
+- [x] Fix `upload_mask`, as the logic behind the `original_ref` handling is totally wrong.
 
-## Needed for release 0.2.5
+## Needed for release 0.1.3
 
-- [x] Add helper to convert a JSON workflow in its ts equivalent.
-- [x] Improve examples and the related documentation
+- [x] Utility functions to automatically collect artifacts and upload resources.
+- [x] Add tests for the automatic functions
 
-## Needed for release 0.2.7
+## Needed for release 0.1.2
 
-- [x] Added support for `models/type` from updated comfy backends
+- [x] JSDOC for code which has been written so far
+- [x] A minimal test suite

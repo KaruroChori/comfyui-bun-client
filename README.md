@@ -20,7 +20,7 @@ To use `comfyui-bun-client` you just need to add it to your `package.json`.
 Make sure you are selecting the latest version available as this readme file might be outdated:
 
 ```sh
-bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.5
+bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.9
 ```
 
 There is no plan to distribute this package via `npm`. Any version which might pop up there is not endorsed.
@@ -28,24 +28,26 @@ There is no plan to distribute this package via `npm`. Any version which might p
 ### CLI tools
 
 > [!IMPORTANT]  
-> Implementation pending
+> Implementation just added in v0.2.9. Please report bugs!
 
-This library also ships with a small CLI to perform operations not related to its runtime:
+This library also ships with a small CLI to perform some operations which are not related to its runtime usage:
 
 - Generate types from a ComfyUI connection
-- Generate the code for a workflow based on an image with embedded metadata.
+- Generate the code by reading the workflow information embedded in the metatada of an image.
 
 ```
 bunx comfybun gen-types DEST_FILE --url=HOST:PORT --packageName="comfyclient"
 ```
 
-`url` and `packageName` have sound defaults. If `DEST_FILE` is not specified a `workflow.ts` file will be generated locally.
+`url` and `packageName` have sound defaults.  
+If `DEST_FILE` is not specified a `workflow.ts` file will be generated locally.
 
 ```
 bunx comfybun gen-code SOURCE_IMAGE DEST_FILE --clientName="comfy"
 ```
 
-`DEST_FILE` is optional, if missing the source name with `.ts` will be used. `clientName` is also optional and it assumes `comfy` as the default client name.
+`DEST_FILE` is optional, if missing the source name with `.ts` will be used.  
+`clientName` is also optional and it assumes `comfy` as the default client name.
 
 ### Minimal example
 
