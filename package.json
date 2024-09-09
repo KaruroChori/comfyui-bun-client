@@ -16,13 +16,13 @@
     "bun": "1.1.18"
   },
   "devDependencies": {
-    "@types/bun": "^1.1.6",
-    "exifreader": "^4.23.5"
+    "@types/bun": "^1.1.6"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.32.35"
+    "@sinclair/typebox": "^0.32.35",
+    "exifreader": "^4.23.5"
   }
 }
