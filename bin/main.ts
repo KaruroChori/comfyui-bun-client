@@ -45,9 +45,10 @@ else if (positionals[2] === 'gen-code') {
             console.error("No prompt found in the metadata")
             process.exit(1)
         }
-        console.log(JSON.parse(t.prompt.value))
+
         await Bun.write(args.destFile, GenerateTSFromJson({
             prompt: JSON.parse(t.prompt.value),
+            extra_data: { extra_pnginfo: { workflow: JSON.parse(t.workflow.value) } },
             client_id: ""
         }, args.clientName))
     } catch (e) { console.error(e) }

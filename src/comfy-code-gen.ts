@@ -23,7 +23,7 @@ export function GenerateTSFromJson(json: Static<typeof WorkflowSchema>, base = '
 
         if (done.has(nodeN)) return;
 
-        nodes.push(`const node_${nodeN} = new ${base}[${JSON.stringify(node.class_type)}](${Object.entries(node.inputs).map(y => `${JSON.stringify(y[0])}: ${resolveArc(y[1])}`).join(',')})`)
+        nodes.push(`const node_${nodeN} = new ${base}[${JSON.stringify(node.class_type)}]({${Object.entries(node.inputs).map(y => `${JSON.stringify(y[0])}: ${resolveArc(y[1])}`).join(',')}})`)
         done.add(nodeN)
     }
 
