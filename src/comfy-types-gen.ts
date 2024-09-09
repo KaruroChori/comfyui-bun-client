@@ -57,7 +57,7 @@ function $(str: string | number) {
  * @param basename the package name for this client library. `comfyui-bun-client` by default.
  * @returns string encoded typescript sourcecode implementing the interface.
  */
-export function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, basename = undefined): string {
+export function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, basename?: string): string {
     const types: Set<string> = new Set()
     const pieces = []
 
@@ -148,7 +148,7 @@ export const Workflow = (_ctx?: Map<number,Node>) => {
  * @param filename the target filename
  * @param pkg the name of the package for this library in the user application. If undefined the one from the original package.json is assumed
  */
-export async function ComfyJSONToTypescript(client: ComfyClient, filename: string, pkg = undefined) {
+export async function ComfyJSONToTypescript(client: ComfyClient, filename: string, pkg?: string) {
     const tmp = await client.object_info()
     const normal = NormalizeComfyJSON(tmp)
     const compiled = CompileComfyJSON(normal, pkg)

@@ -2,14 +2,14 @@
 
 ## Needed for release 0.2.9
 
-- [ ] CLI via npx/bunx
-  - [ ] Support for generating comfy types to file (expose comfy-types-gen)
-  - [ ] Support for generating workflow code from image (expose comfy-code-gen)
-  - [ ] Document new features
-- [ ] Optional support to add metadata in the final artifacts if desired.
+- [x] CLI via npx/bunx
+  - [x] Support for generating comfy types to file (expose comfy-types-gen)
+  - [x] Support for generating workflow code from image (expose comfy-code-gen)
+  - [x] Document new features
 
 ## Needed for release 0.2.11
 
+- [ ] Optional support to add metadata in the final artifacts if so desired.
 - [ ] Add tests for the workflow building
 - [ ] Add tests for ts code gen from workflow
 - [ ] Better error handling when workflows fail (and related tests)

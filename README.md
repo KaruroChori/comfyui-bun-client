@@ -36,12 +36,16 @@ This library also ships with a small CLI to perform operations not related to it
 - Generate the code for a workflow based on an image with embedded metadata.
 
 ```
-bunx comfybun gen-types DEST_FILE -- --host=HOST --port=PORT
+bunx comfybun gen-types DEST_FILE --url=HOST:PORT --packageName="comfyclient"
 ```
 
+`url` and `packageName` have sound defaults. If `DEST_FILE` is not specified a `workflow.ts` file will be generated locally.
+
 ```
-bunx comfybun extract SOURCE_IMAGE DEST_FILE
+bunx comfybun gen-code SOURCE_IMAGE DEST_FILE --clientName="comfy"
 ```
+
+`DEST_FILE` is optional, if missing the source name with `.ts` will be used. `clientName` is also optional and it assumes `comfy` as the default client name.
 
 ### Minimal example
 
