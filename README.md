@@ -32,22 +32,10 @@ There is no plan to distribute this package via `npm`. Any version which might p
 
 This library also ships with a small CLI to perform some operations which are not related to its runtime usage:
 
-- Generate types from a ComfyUI connection
-- Generate the code by reading the workflow information embedded in the metatada of an image.
+- Generate types from a ComfyUI instance
+- Generate the code by reading the workflow information embedded in the metadata of an image.
 
-```
-bunx comfybun gen-types DEST_FILE --url=HOST:PORT --packageName="comfyclient"
-```
-
-`url` and `packageName` have sound defaults.  
-If `DEST_FILE` is not specified a `workflow.ts` file will be generated locally.
-
-```
-bunx comfybun gen-code SOURCE_IMAGE DEST_FILE --clientName="comfy"
-```
-
-`DEST_FILE` is optional, if missing the source name with `.ts` will be used.  
-`clientName` is also optional and it assumes `comfy` as the default client name.
+For further information about their usage check [here](./docs/cli.md).
 
 ### Minimal example
 
