@@ -3,8 +3,11 @@
   "module": "index.ts",
   "type": "module",
   "license": "BSD-3-Clause",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Wrapper for the REST endpoints of a comfyui instance & some quality of life utils.",
+  "bin": {
+    "comfybun": "./bin/main.ts"
+  },
   "author": {
     "name": "karurochari",
     "url": "https://karurochari.com"
@@ -13,7 +16,8 @@
     "bun": "1.1.18"
   },
   "devDependencies": {
-    "@types/bun": "^1.1.6"
+    "@types/bun": "^1.1.6",
+    "meta-png": "^1.0.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

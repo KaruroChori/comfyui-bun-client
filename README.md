@@ -25,6 +25,24 @@ bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.5
 
 There is no plan to distribute this package via `npm`. Any version which might pop up there is not endorsed.
 
+### CLI tools
+
+> [!IMPORTANT]  
+> Implementation pending
+
+This library also ships with a small CLI to perform operations not related to its runtime:
+
+- Generate types from a ComfyUI connection
+- Generate the code for a workflow based on an image with embedded metadata.
+
+```
+bunx comfybun gen-types DEST_FILE -- --host=HOST --port=PORT
+```
+
+```
+bunx comfybun extract SOURCE_IMAGE DEST_FILE
+```
+
 ### Minimal example
 
 This example shows how to connect to your ComfyUI backend in debug mode, and ask for the system stats to be provided:
