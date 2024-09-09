@@ -2,7 +2,7 @@
 > Implementation just added in v0.2.9. Please report bugs!
 
 > [!WARNING]  
-> This package is not distributed via npm.
+> This package is not distributed via npm.  
 > You might have to write something like `bun link comfyui-bun-runtime` in the repo to activate it first.  
 > Otherwise, you can just use run the script as a normal executable.
 
