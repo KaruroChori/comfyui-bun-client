@@ -2,7 +2,7 @@
 
 ## Needed for release 0.2.11
 
-- [ ] Optional support to add metadata in the final artifacts if so desired.
+- [ ] Optional support to add/strip metadata in the final artifacts if so desired.
 - [ ] Add tests for the workflow building
 - [ ] Add tests for ts code gen from workflow
 - [ ] Better error handling when workflows fail (and related tests)
@@ -10,7 +10,7 @@
 ## Needed for release 0.3.x
 
 - [ ] Add support for client-side certificates to authorize the connection with comfyui (needed for some semi-public configurations)
-- [ ] Add interpolation support for pre-compiled workflows. Needed to generate many variants fast
+- [ ] Add interpolation support for pre-compiled workflows. Needed to generate many variants fast (?)
 
 # Older releases
 
