@@ -1,7 +1,7 @@
 import { Workflow, dyn } from "../interface.ts"
 import type { Node } from "comfyui-bun-client"
 
-export default async ({ model, positive, negative, fast, batch }: {
+export default ({ model, positive, negative, fast, batch }: {
     model: string,
     positive: string,
     negative?: string,

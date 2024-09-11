@@ -58,13 +58,14 @@ There is a small set of examples provided as part of this repository in `./examp
 
 ### Define a custom workflow in TS
 
-Workflows can be directly written in typescript.  
+Workflows can be directly written in typescript!  
 Type hints are supported and `tsc` can be used to statically check if your custom workflow is (likely) sound.  
 [Check here](./docs/custom-workflows.md) for the relevant documentation & examples.
 
 Unlike the main UI based on [litegraph](https://github.com/jagenjo/litegraph.js) which uses groups to organize complex workflows, as it is just TS code you can freely structure components as functions or classes.  
-You might even be able to bind some react-like library and write workflows as `jsx` files, but I have not explored this option.  
-[This repository](https://github.com/KaruroChori/comfyui-ts-workflows) has some reusable components I designed for my own applications, but you too might find them useful.
+You might even be able to bind some react-like library and write workflows as `jsx` files, but I have not explored this option.
+
+I plan on having a small repository of workflows as part of this package in `./workflows`. Feel free to send submissions, but please check the [README](./workflows/README.md) first.
 
 ## Information for developers
 

@@ -1,4 +1,4 @@
-To be written.
+To be written. Check the examples for reference for now!
 
 ## Uploading assets
 

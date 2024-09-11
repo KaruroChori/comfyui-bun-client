@@ -23,7 +23,7 @@ import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
         console.log('Waiting for submission of prompt 2')
         {
             const file = (await import("./workflows/composable")).default
-            const workflow = (await file({ positive: "Banana", model: "Crystal-PR_rc2.safetensors" }))
+            const workflow = file({ positive: "Banana", model: "Crystal-PR_rc2.safetensors" })
             const tmp = await workflow.workflow.$compile(client.uid)
             console.log(JSON.stringify(tmp, undefined, 4))
 

@@ -7,14 +7,19 @@ As a quick start, you can check the example in `examples/custom-workflow` to see
 
 ## Building the `interface.ts` file
 
-Once you have a connection defined, generating the `interface.ts` file is very simple.  
-You can either do that in `bun repl`, add it a script for your application, or even better just use the CLI introduced by v0.2.9:
+The first thing you want is the registry of installed nodes to have type safety in your code.  
+Generating this `interface.ts` file is very simple.  
+You can either:
+
+- generate it in a `bun repl` session
+- add a script for your application
+- generate it via the comfybun CLI introduced by v0.2.9:
 
 ```
 bunx comfybun gen-types ../interface.ts
 ```
 
-alternatively some code like:
+is basically equivalent to:
 
 ```ts
 import { ComfyClient, ComfyJSONToTypescript } from 'comfyui-bun-client'
@@ -43,7 +48,7 @@ The next steps are:
 - To wrap it around a generator
 - To mark dynamic parameters as terminal values and add string interpolations when needed
 - To define the return type desired and the map of artifacts
-- (optional) to provide a testsuite for it
+- (optional) to provide a test suite for it
 
 ### Wrapping
 
@@ -53,7 +58,7 @@ A good structure for your workflow file to be composable can be as follows:
 import { Workflow, dyn } from "../interface.ts"
 import type { Node } from "comfyui-bun-client"
 
-export const workflow = async (opts:CUSTOM, ctx?: Map<number, Node>) => {
+export const workflow = (opts:CUSTOM, ctx?: Map<number, Node>) => {
     const comfy = Workflow(ctx);
 
     // All node in here either manually written or code generated.
@@ -66,7 +71,7 @@ export const test = async () => {
     using client = new ComfyClient(process.env.COMFY ?? 'localhost:8188', { debug: true })
     const wf = workflow()
     const compiled = await wf.workflow.$compile(client.uid)
-    const job = await client.schedule_job(compiled, [], [/*...*/]);
+    const job = await client.schedule_job(compiled, [], [/*...*/], {});
     await job.completion()
 
     //Validation on output here?
@@ -87,5 +92,6 @@ However, right now there no helper for that.
 
 ### Compiling or not?
 
-You can decide if you want your workflow to directly return the compiled result or not. This is shown in the examples as `examples/ts-workflow/workflows/complete.ts` vs `examples/ts-workflow/workflows/composable.ts`.  
+You can decide if you want your workflow to directly return the compiled result or not.  
+This is shown in the examples as `examples/ts-workflow/workflows/complete.ts` vs `examples/ts-workflow/workflows/composable.ts`.  
 In general, to promote the composability of workflows returning the basic object before compilation is more desirable.
