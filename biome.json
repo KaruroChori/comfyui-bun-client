@@ -7,7 +7,11 @@
       "style": {
         "noUselessElse": "off",
         "noNonNullAssertion": "off"
+      },
+      "complexity": {
+        "useLiteralKeys": "off"
       }
-    }
+    },
+    "ignore": ["./workflows/interface.ts"]
   }
 }

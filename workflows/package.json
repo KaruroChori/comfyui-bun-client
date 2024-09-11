@@ -2,7 +2,7 @@
   "name": "comfyui-bun-workflows",
   "module": "index.ts",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "CC0-1.0",
   "description": "Basic workflows",
   "author": {
     "name": "karurochari",

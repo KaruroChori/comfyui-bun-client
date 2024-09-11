@@ -70,7 +70,7 @@ export function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, bas
         }
         else {
             if (type.length !== 0) return `${type.map(x => `'${$(x)}'`).join('|')}| $dyn`
-            else return 'void';
+            else return '$dyn'; //Technically void, but $dyn is always allowed
         }
     }
 
@@ -81,9 +81,6 @@ export function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, bas
      * @desc ${metadata.description}
     */
     ${JSON.stringify(metadata.name)} : class extends Node{
-        //Setters
-        ${Object.entries(inputs).map((x, i) => `//set '${$(x[0])}'(value : ${TypeFromComfyUI(x[1].type)})  { super.$$link(${i}, value) } `).join('\n')}
-
         //Getters
         ${Object.entries(outputs).map((x, i) => `get '${$(x[0])}'() : ${TypeFromComfyUI(x[1].type)} { return [this.$uid.toString(), ${i}]  as unknown as ${TypeFromComfyUI(x[1].type)}; }`).join('\n')}
 
