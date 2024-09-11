@@ -25,18 +25,6 @@ bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.9
 
 There is no plan to distribute this package via `npm`. Any version which might pop up there is not endorsed.
 
-### CLI tools
-
-> [!IMPORTANT]  
-> Implementation just added in v0.2.9. Please report bugs!
-
-This library also ships with a small CLI to perform some operations which are not related to its runtime usage:
-
-- Generate types from a ComfyUI instance
-- Generate the code by reading the workflow information embedded in the metadata of an image.
-
-For further information about their usage check [here](./docs/cli.md).
-
 ### Minimal example
 
 This example shows how to connect to your ComfyUI backend in debug mode, and ask for the system stats to be provided:
@@ -52,9 +40,18 @@ import {ComfyClient} from "comfyui-bun-client"
 
 There is a small set of examples provided as part of this repository in `./examples/` to explore any more advanced usage.
 
-### Run a full sequence of jobs
 
-[Check here](./docs/run-jobs.md).
+### CLI tools
+
+> [!IMPORTANT]  
+> Implementation just added in v0.2.9. Please report bugs!
+
+This library also ships with a small CLI to perform some operations which are not related to its runtime usage:
+
+- Generate types from a ComfyUI instance
+- Generate the code by reading the workflow information embedded in the metadata of an image.
+
+For further information about their usage check [here](./docs/cli.md).
 
 ### Define a custom workflow in TS
 
@@ -67,6 +64,11 @@ You might even be able to bind some react-like library and write workflows as `j
 
 I plan on having a small collection of workflows as part of this package in `./workflows`.  
 Feel free to send submissions, but please check the [README](./workflows/README.md) first.
+
+### Run a full sequence of jobs
+
+[Check here](./docs/run-jobs.md).
+
 
 ## Information for developers
 
