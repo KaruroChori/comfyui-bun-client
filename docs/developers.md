@@ -15,7 +15,9 @@ Breaking changes are generally performed on major releases only **after** major 
 ## Test suite
 
 To run the test suite, you need access to a compatible ComfyUI instance as backend.  
-Only vanilla features are being used for testing, so there is no need to set it up with special extensions.
+~~Only vanilla features are being used for testing, so there is no need to set it up with special extensions.~~
+Right now [crystools](https://registry.comfy.org/nodes/comfyui-crystools) is needed, as there is no good way to implement a basic workflow with base nodes.  
+My plan is to write a very small custom plugin for ComfyUI to specifically help with the testsuite.
 
 Its address should be set in the environment file `.env.test` under the variable `COMFY`.  
 Otherwise, it will default to `localhost:8188`.

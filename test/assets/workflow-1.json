@@ -1,12 +1,14 @@
 {
   "prompt": {
-    "5": {
-      "inputs": { "label": "Debug to Console", "number": ["6", 0] },
-      "class_type": "Debug Number to Console"
+    "1": {
+      "inputs": { "prefix": "Value:", "value": ["3", 0] },
+      "class_type": "ConsoleDebug+",
+      "_meta": { "title": "🔧 Console Debug" }
     },
-    "6": {
-      "inputs": { "number_type": "integer", "number": 0 },
-      "class_type": "Constant Number"
+    "3": {
+      "inputs": { "string": "hello" },
+      "class_type": "Primitive string [Crystools]",
+      "_meta": { "title": "🪛 Primitive string" }
     }
   }
 }

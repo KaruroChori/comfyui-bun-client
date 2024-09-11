@@ -50,7 +50,8 @@ export const WorkflowSchema = t.Object({
     client_id: t.String(),
     prompt: t.Record(t.String(), t.Object({
         class_type: t.String(),
-        inputs: t.Record(t.String(), t.Union([t.Boolean(), t.String(), t.Number(), t.Null(), t.Undefined(), t.Tuple([t.String(), t.Integer()], { description: "Arc or value" })]))
+        inputs: t.Record(t.String(), t.Union([t.Boolean(), t.String(), t.Number(), t.Null(), t.Undefined(), t.Tuple([t.String(), t.Integer()], { description: "Arc or value" })])),
+        _meta: t.Optional(t.Object({}))
     }, { additionalProperties: false })),
     //This section is only present for graphs for which we want to provide/preserve the UI support in the official comfy web ui
     extra_data: t.Optional(

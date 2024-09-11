@@ -8,6 +8,9 @@
 
 ## Sub commands
 
+Ideally I would have used something like [commander.js](https://github.com/tj/commander.js) to handle the CLI, but I am really trying to keep external dependencies as low as possible.  
+Because of that, the CLI interface is not as good as I would like, and if I need to expand it further I will probably reconsider this.
+
 ### Generating types
 
 ```

@@ -2,10 +2,20 @@
 
 ## Needed for release 0.2.11
 
-- [ ] Optional support to add/strip metadata in the final artifacts if so desired.
 - [ ] Add tests for the workflow building
 - [ ] Add tests for ts code gen from workflow
+- [x] Improve docs for recent features
+
+## Needed for release 0.2.13
+
+- [ ] Companion plugin for Comfy to simplify testing.
+- [ ] Optional support to add/strip metadata in the final artifacts if so desired.
 - [ ] Better error handling when workflows fail (and related tests)
+
+## Needed for release 0.2.13
+
+- [ ] Use names from the workflow for nodes during code gen.
+- [ ] Generate more of the boilerplate during code gen.
 
 ## Needed for release 0.3.x
 
