@@ -1,21 +1,17 @@
 # Upcoming
 
-## Needed for release 0.2.11
-
-- [ ] Add tests for the workflow building
-- [ ] Add tests for ts code gen from workflow
-- [x] Improve docs for recent features
-
 ## Needed for release 0.2.13
 
 - [ ] Companion plugin for Comfy to simplify testing.
-- [ ] Optional support to add/strip metadata in the final artifacts if so desired.
-- [ ] Better error handling when workflows fail (and related tests)
+- [ ] Add tests for the workflow building
+- [ ] Add tests for ts code gen from workflow
 
-## Needed for release 0.2.13
+## Needed for release 0.2.15
 
 - [ ] Use names from the workflow for nodes during code gen.
 - [ ] Generate more of the boilerplate during code gen.
+- [ ] Optional support to add/strip metadata in the final artifacts if so desired.
+- [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.3.x
 
@@ -23,6 +19,11 @@
 - [ ] Add interpolation support for pre-compiled workflows. Needed to generate many variants fast (?)
 
 # Older releases
+
+## Needed for release 0.2.11
+
+- [x] Improve docs for recent features
+- [x] Complete work on the workflows sub-repo
 
 ## Needed for release 0.2.9
 

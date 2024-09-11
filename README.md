@@ -65,7 +65,8 @@ Type hints are supported and `tsc` can be used to statically check if your custo
 Unlike the main UI based on [litegraph](https://github.com/jagenjo/litegraph.js) which uses groups to organize complex workflows, as it is just TS code you can freely structure components as functions or classes.  
 You might even be able to bind some react-like library and write workflows as `jsx` files, but I have not explored this option.
 
-I plan on having a small repository of workflows as part of this package in `./workflows`. Feel free to send submissions, but please check the [README](./workflows/README.md) first.
+I plan on having a small collection of workflows as part of this package in `./workflows`.  
+Feel free to send submissions, but please check the [README](./workflows/README.md) first.
 
 ## Information for developers
 
