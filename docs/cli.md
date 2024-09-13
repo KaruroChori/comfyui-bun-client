@@ -27,4 +27,5 @@ bunx comfybun gen-code SOURCE_IMAGE DEST_FILE --clientName=comfy
 ```
 
 `DEST_FILE` is optional, if missing the source name with `.ts` will be used.  
-`clientName` is also optional and it assumes `comfy` as the default client name.
+`clientName` is also optional and it assumes `comfy` as the default client name.  
+If `raw` is set true only the list of nodes is generated, else (default) more opinionated boilerplate will be added.

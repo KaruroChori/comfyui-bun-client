@@ -4,6 +4,7 @@
 
 - [ ] Companion plugin for Comfy to simplify testing.
 - [ ] Optional support to add/strip metadata in the final artifacts if so desired.
+- [x] Generate more of the boilerplate during code gen.
 
 ## Needed for release 0.2.17
 
@@ -13,7 +14,6 @@
 ## Needed for release 0.2.19
 
 - [ ] Use names from the workflow for nodes during code gen.
-- [ ] Generate more of the boilerplate during code gen.
 - [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.3.x

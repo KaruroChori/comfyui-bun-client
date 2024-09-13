@@ -1,4 +1,4 @@
-import { Workflow, dyn } from "../interface.ts"
+import { Workflow, dyn } from "../comfy-types.ts"
 import { ComfyClient, type Node } from "comfyui-bun-client"
 
 export const version = [1, 0, 0]
