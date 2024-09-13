@@ -63,10 +63,26 @@ export function CompileComfyJSON(cfg: ReturnType<typeof NormalizeComfyJSON>, bas
 
     function TypeFromComfyUI(type: string | string[], metadata?: { min?: unknown, max?: unknown, default?: unknown, step?: unknown }) {
         if (typeof type === 'string') {
-            if (['STRING', 'BOOLEAN', 'INT', 'FLOAT', '*'].includes(type) === false) types.add(type);
-            if (type === '*') return 'ANY'
-            else if (metadata?.min !== undefined && metadata?.max !== undefined) return `${type}<${metadata.min},${metadata.max}>`;
-            else return type;
+            const type_list = type.split(",");
+            const ret_list = []
+            for (const type of type_list) {
+                const reduced_type = type.split(":")[0]
+                if (
+                    ["STRING", "BOOLEAN", "INT", "FLOAT", "*"].includes(
+                        reduced_type,
+                    ) === false
+                )
+                    types.add(reduced_type);
+
+                if (reduced_type === "*") ret_list.push("ANY");
+                else if (
+                    metadata?.min !== undefined &&
+                    metadata?.max !== undefined
+                )
+                    ret_list.push(`${reduced_type}<${metadata.min},${metadata.max}>`);
+                else ret_list.push(reduced_type);
+            }
+            return ret_list.join('|');
         }
         else {
             if (type.length !== 0) return `${type.map(x => `'${$(x)}'`).join('|')}| $dyn`

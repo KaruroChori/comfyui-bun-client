@@ -18,7 +18,7 @@ bunx comfybun gen-types DEST_FILE --url=HOST:PORT --packageName=comfyclient
 ```
 
 `url` and `packageName` have sound defaults.  
-If `DEST_FILE` is not specified a `workflow.ts` file will be generated locally.
+If `DEST_FILE` is not specified a `comfy-types.ts` file will be generated locally.
 
 ### Code from image
 

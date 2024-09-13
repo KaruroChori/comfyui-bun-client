@@ -1,24 +1,30 @@
 # Upcoming
 
-## Needed for release 0.2.13
+## Needed for release 0.2.15
 
 - [ ] Companion plugin for Comfy to simplify testing.
+- [ ] Optional support to add/strip metadata in the final artifacts if so desired.
+
+## Needed for release 0.2.17
+
 - [ ] Add tests for the workflow building
 - [ ] Add tests for ts code gen from workflow
 
-## Needed for release 0.2.15
+## Needed for release 0.2.19
 
 - [ ] Use names from the workflow for nodes during code gen.
 - [ ] Generate more of the boilerplate during code gen.
-- [ ] Optional support to add/strip metadata in the final artifacts if so desired.
 - [ ] Better error handling when workflows fail (and related tests)
 
 ## Needed for release 0.3.x
 
 - [ ] Add support for client-side certificates to authorize the connection with comfyui (needed for some semi-public configurations)
-- [ ] Add interpolation support for pre-compiled workflows. Needed to generate many variants fast (?)
 
 # Older releases
+
+## Needed for release 0.2.13
+
+- [x] Fixing codegen for some plugins
 
 ## Needed for release 0.2.11
 
