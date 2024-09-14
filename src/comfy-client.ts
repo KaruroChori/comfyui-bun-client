@@ -628,9 +628,11 @@ export class ComfyClient {
                             const tmp = await this.view(entry.filename, { subfolder: entry.subfolder, type: entry.type });
                             try {
                                 if (file.metadata === false || file.metadata === undefined) {
+                                    //TODO: Functionality not provided. So it is not working right now.
                                     const dataWithExif = await sharp(await tmp.arrayBuffer())
                                         .withExif({})
                                         .keepIccProfile()
+                                        .withMetadata({ comment: {} })
                                         .toBuffer();
                                     await Bun.write(file.to(i, entry.filename, 'images'), dataWithExif);
                                 }
