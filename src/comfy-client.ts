@@ -573,7 +573,7 @@ export class ComfyClient {
      */
     async schedule_job(workflow: unknown,
         infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
-        outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string, metadata?: sharp.Exif | boolean }[],
+        outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string, metadata?: boolean }[],
         cb: {
             onStart?: () => (void | Promise<void>)
             onCompleted?: () => (void | Promise<void>)
@@ -627,21 +627,13 @@ export class ComfyClient {
                         for (const [_, entry] of Object.entries(entires)) {
                             const tmp = await this.view(entry.filename, { subfolder: entry.subfolder, type: entry.type });
                             try {
-                                if (typeof file.metadata !== 'boolean') {
-                                    //By default strip metadata as we do not want it leaking in the final assets. The user can still just save the workflow JSON alongside the rest of the artifacts if so desired.
+                                if (file.metadata === false || file.metadata === undefined) {
                                     const dataWithExif = await sharp(await tmp.arrayBuffer())
-                                        .withExif(file.metadata ?? {})
-                                        .toBuffer();
-                                    await Bun.write(file.to(i, entry.filename, 'images'), dataWithExif);
-
-                                }
-                                else if (file.metadata === false || file.metadata === undefined) {
-                                    const dataWithExif = await sharp(await tmp.arrayBuffer())
-                                        .withExif({})
+                                        .keepIccProfile()
                                         .toBuffer();
                                     await Bun.write(file.to(i, entry.filename, 'images'), dataWithExif);
                                 }
-                                else if (file.metadata === true) await Bun.write(file.to(i++, entry.filename, 'images'), tmp);
+                                else await Bun.write(file.to(i++, entry.filename, 'images'), tmp);
                             }
                             catch (e) {
                                 //This is not an image or a supported type of file. Just save it.
