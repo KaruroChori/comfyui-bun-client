@@ -178,7 +178,7 @@ export class ComfyClient {
      * @returns Available embeddings from ComfyUI
      * @deprecated This function has been de-facto replaced by models("embeddings") on modern comfy instances
      */
-    async models(type:string) {
+    async models(type: string) {
         return await (
             await fetch(
                 `http${this.#secure ? "s" : ""}://${this.#endpoint}/models/${type}?${new URLSearchParams({
@@ -572,7 +572,7 @@ export class ComfyClient {
      */
     async schedule_job(workflow: unknown,
         infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
-        outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string; }[],
+        outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string, metadata?: boolean }[],
         cb: {
             onStart?: () => (void | Promise<void>)
             onCompleted?: () => (void | Promise<void>)
@@ -625,6 +625,10 @@ export class ComfyClient {
                         let i = 0;
                         for (const [_, entry] of Object.entries(entires)) {
                             const tmp = await this.view(entry.filename, { subfolder: entry.subfolder, type: entry.type });
+                            if (file.metadata !== true) {
+                                //By default strip metadata as we do not want it leaking in the final assets. The user can still just save the workflow JSON alongside the rest of the artifacts if so desired.
+                                //TODO: Me stupid. It is clear that a library called ExifReader is just going to exif-read. https://github.com/lovell/sharp is a semi-native solution which **should** work in bun as well.
+                            }
                             await Bun.write(file.to(i++, entry.filename, 'images'), tmp);
                             if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp);
                         }
