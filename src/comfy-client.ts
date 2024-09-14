@@ -629,6 +629,7 @@ export class ComfyClient {
                             try {
                                 if (file.metadata === false || file.metadata === undefined) {
                                     const dataWithExif = await sharp(await tmp.arrayBuffer())
+                                        .withExif({})
                                         .keepIccProfile()
                                         .toBuffer();
                                     await Bun.write(file.to(i, entry.filename, 'images'), dataWithExif);
