@@ -8,6 +8,7 @@ import { basename, dirname } from "node:path"
 import type { Static } from "@sinclair/typebox";
 import { WorkflowSchema } from "./comfy-types-base";
 import { Value } from "@sinclair/typebox/value";
+import sharp from "sharp";
 
 /**
  * States for a job to be in.
@@ -572,7 +573,7 @@ export class ComfyClient {
      */
     async schedule_job(workflow: unknown,
         infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
-        outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string, metadata?: boolean }[],
+        outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string, metadata?: sharp.Exif | boolean }[],
         cb: {
             onStart?: () => (void | Promise<void>)
             onCompleted?: () => (void | Promise<void>)
@@ -625,11 +626,28 @@ export class ComfyClient {
                         let i = 0;
                         for (const [_, entry] of Object.entries(entires)) {
                             const tmp = await this.view(entry.filename, { subfolder: entry.subfolder, type: entry.type });
-                            if (file.metadata !== true) {
-                                //By default strip metadata as we do not want it leaking in the final assets. The user can still just save the workflow JSON alongside the rest of the artifacts if so desired.
-                                //TODO: Me stupid. It is clear that a library called ExifReader is just going to exif-read. https://github.com/lovell/sharp is a semi-native solution which **should** work in bun as well.
+                            try {
+                                if (typeof file.metadata !== 'boolean') {
+                                    //By default strip metadata as we do not want it leaking in the final assets. The user can still just save the workflow JSON alongside the rest of the artifacts if so desired.
+                                    const dataWithExif = await sharp(await tmp.arrayBuffer())
+                                        .withExif(file.metadata ?? {})
+                                        .toBuffer();
+                                    await Bun.write(file.to(i, entry.filename, 'images'), dataWithExif);
+
+                                }
+                                else if (file.metadata === false || file.metadata === undefined) {
+                                    const dataWithExif = await sharp(await tmp.arrayBuffer())
+                                        .withExif({})
+                                        .toBuffer();
+                                    await Bun.write(file.to(i, entry.filename, 'images'), dataWithExif);
+                                }
+                                else if (file.metadata === true) await Bun.write(file.to(i++, entry.filename, 'images'), tmp);
                             }
-                            await Bun.write(file.to(i++, entry.filename, 'images'), tmp);
+                            catch (e) {
+                                //This is not an image or a supported type of file. Just save it.
+                                await Bun.write(file.to(i, entry.filename, 'images'), tmp);
+                            }
+                            i++;
                             if (this.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp);
                         }
                     }
