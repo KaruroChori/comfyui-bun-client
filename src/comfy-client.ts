@@ -697,4 +697,160 @@ export class ComfyClient {
         }
     }
 
+
+    /**
+     * Generate a new job (automatic handling of submission, callbacks and final cleanup)
+     * @param workflow The full JSON workflow to submit as part of the request.
+     * @param infiles List of files to be uploaded as resources (and their naming mapping)
+     * @param infiles List of files to be downloaded upon completion (and their naming mapping)
+     * @param cb All the custom callbacks defined for the lifetime of this job
+     * @returns A handle for the newly scheduled job.
+     */
+    async job(workflow: unknown) {
+        //Only this function is checking the workflow against the schema. Raw call to post_prompt are not.
+        if (!Value.Check(WorkflowSchema, workflow)) {
+            for (const err of Value.Errors(WorkflowSchema, workflow)) console.error(err);
+            throw new Error("Schema validation for workflow failed!");
+        }
+
+        let status: ComfyJob_Status = "building"
+        const errors: unknown[] = [];
+
+        let tmp: { prompt_id: string, node_errors: string[] }
+        let uid: string
+        const cb: {
+            onStart?: () => (void | Promise<void>)
+            onCompleted?: () => (void | Promise<void>)
+            onCancelled?: () => (void | Promise<void>)
+            onUpdate?: (node: number, done: boolean) => (void | Promise<void>)
+            onError?: (errors: unknown) => (void | Promise<void>)
+        } = {}
+
+        const parent = this;
+
+        return {
+            get uid() { return uid },
+            get status() { return status },
+            get errors() { return errors },
+
+            onStart(fn?: () => (void | Promise<void>)) { if (status !== 'building') throw Error("Job set callback outside building"); cb.onStart = fn },
+            onCompleted(fn?: () => (void | Promise<void>)) { if (status !== 'building') throw Error("Job set callback outside building"); cb.onCompleted = fn },
+            onUpdate(fn?: () => (void | Promise<void>)) { if (status !== 'building') throw Error("Job set callback outside building"); cb.onUpdate = fn },
+            onError(fn?: () => (void | Promise<void>)) { if (status !== 'building') throw Error("Job set callback outside building"); cb.onError = fn },
+
+            async schedule() {
+                if (status !== 'building') throw Error("Job scheduled for execution outside building");
+
+                tmp = await parent.post_prompt(workflow)
+                uid = tmp.prompt_id
+                status = 'queued'
+
+                if (Object.keys(tmp.node_errors).length !== 0) {
+                    status = 'failed'
+                    errors.push(tmp.node_errors)
+                    if (cb.onError) await cb.onError(tmp.node_errors);
+                }
+
+
+                parent.#jobs.set(uid, {
+                    onStart: async () => {
+                        status = "running";
+                        if (cb.onStart) await cb.onStart();
+                    },
+                    onCompleted: async () => {
+                        status = "completed";
+                        parent.#jobs.delete(uid);
+                        if (cb.onCompleted) await cb.onCompleted();
+
+                    },
+                    onUpdate: async (node, done) => {
+                        status = "running";
+                        if (cb.onUpdate) await cb.onUpdate(node, done);
+                    },
+                    onError: async (e) => {
+                        status = "failed";
+                        errors.push(errors);
+                        parent.#jobs.delete(uid);
+                        if (cb.onError) await cb.onError(e);
+                    },
+                    onCancelled: async () => {
+                        status = "cancelled";
+                        parent.#jobs.delete(uid);
+                        if (cb.onCancelled) await cb.onCancelled();
+                    }
+                })
+
+            },
+
+            //To await completion, collect the result and do something with it.
+            async completion() {
+                while (true) {
+                    if (status === 'running' || status === 'queued') await sleep(0)
+                    else break;
+                }
+                return this;
+            },
+
+            //Upload files to the backend
+            async upload_files(infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
+            ) {
+                if (status !== 'building') throw Error("Job upload resources outside building");
+                for (const file of infiles) {
+                    const tmp = (file.mask ?? true) ?
+                        await parent.upload_image(BunFileToFile(Bun.file(file.from), file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' }) :
+                        undefined
+                    if (parent.#debug) console.log(`Loaded ${file.from}`, tmp)
+                }
+                return this;
+            },
+
+            //Get files back from the backend
+            async collect_files(outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string, metadata?: boolean }[],
+            ) {
+                if (status !== 'completed') throw Error("Job collection requested before completion");
+                for (const file of outfiles) {
+                    //Recover all artifacts from the server.
+                    const result = await parent.get_history(uid)
+                    const t = parent.#jobs.get(uid);
+                    for (const [format, entries] of Object.entries(result[uid].outputs[file.from])) {
+                        const entires = entries as { filename: string, subfolder: string, type: ComfyResType }[];
+                        let i = 0;
+                        for (const [_, entry] of Object.entries(entires)) {
+                            const tmp = await parent.view(entry.filename, { subfolder: entry.subfolder, type: entry.type });
+                            try {
+                                if (file.metadata === false || file.metadata === undefined) {
+                                    //TODO: Functionality not provided. So it is not working right now.
+                                    const dataWithExif = await sharp(await tmp.arrayBuffer())
+                                        .withExif({})
+                                        .keepIccProfile()
+                                        .withMetadata({ comment: {} })
+                                        .toBuffer();
+                                    await Bun.write(file.to(i, entry.filename, 'images'), dataWithExif);
+                                }
+                                else await Bun.write(file.to(i++, entry.filename, 'images'), tmp);
+                            }
+                            catch (e) {
+                                //This is not an image or a supported type of file. Just save it.
+                                await Bun.write(file.to(i, entry.filename, 'images'), tmp);
+                            }
+                            i++;
+                            if (parent.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp);
+                        }
+                    }
+
+                }
+                return;
+            },
+
+            /**
+             * Cancel this job, regardless of its current progression.
+             */
+            async cancel() {
+                if (['cancelled', 'failed', 'completed', 'building'].includes(status)) return;    //Ignore deletion for these cases
+                const tmp = await parent.delete_queue_entries([uid])
+                return this;
+            }
+        }
+    }
+
 }

@@ -2,6 +2,9 @@
 
 ## Needed for release 0.2.15
 
+- [ ] New job interface to be more flexible
+  - [x] Rework the legacy one just not to break code and use the new version.
+  - [ ] Upload and collect streams/buffer, not just files.
 - [ ] Companion plugin for Comfy to simplify testing.
   - [ ] Wait node, to simulate long computation. Needed for some time sensitive testing
   - [ ] A self-contained output node just to verify workflows are working
