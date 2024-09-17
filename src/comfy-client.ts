@@ -570,6 +570,7 @@ export class ComfyClient {
      * @param infiles List of files to be downloaded upon completion (and their naming mapping)
      * @param cb All the custom callbacks defined for the lifetime of this job
      * @returns A handle for the newly scheduled job.
+     * @deprecated
      */
     async schedule_job(workflow: unknown,
         infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
@@ -701,7 +702,7 @@ export class ComfyClient {
             },
 
             //Get files back from the backend
-            async collect_files(outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string, metadata?: boolean }[],
+            async collect_files(outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string }[],
             ) {
                 if (status !== 'completed') throw Error("Job collection requested before completion");
                 for (const file of outfiles) {
@@ -713,22 +714,9 @@ export class ComfyClient {
                         let i = 0;
                         for (const [_, entry] of Object.entries(entires)) {
                             const tmp = await parent.view(entry.filename, { subfolder: entry.subfolder, type: entry.type });
-                            try {
-                                if (file.metadata === false || file.metadata === undefined) {
-                                    //TODO: Functionality not provided. So it is not working right now.
-                                    const dataWithExif = await sharp(await tmp.arrayBuffer())
-                                        .withExif({})
-                                        .keepIccProfile()
-                                        .withMetadata({ comment: {} })
-                                        .toBuffer();
-                                    await Bun.write(file.to(i, entry.filename, 'images'), dataWithExif);
-                                }
-                                else await Bun.write(file.to(i++, entry.filename, 'images'), tmp);
-                            }
-                            catch (e) {
-                                //This is not an image or a supported type of file. Just save it.
-                                await Bun.write(file.to(i, entry.filename, 'images'), tmp);
-                            }
+
+                            await Bun.write(file.to(i, entry.filename, 'images'), tmp);
+
                             i++;
                             if (parent.#debug) console.log(`Saved ${file.from} to ${file.to}`, tmp);
                         }

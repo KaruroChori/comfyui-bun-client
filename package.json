@@ -19,10 +19,15 @@
     "@types/bun": "^1.1.6"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "sharp": "^0.33.5"
+  },
+  "peerDependenciesMeta": {
+    "sharp": {
+      "optional": true
+    }
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.32.35",
-    "sharp": "^0.33.5"
+    "@sinclair/typebox": "^0.32.35"
   }
 }

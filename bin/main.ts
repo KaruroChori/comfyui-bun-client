@@ -5,6 +5,8 @@ import ExifReader from 'exifreader';
 import wftmpl from './workflow-template'
 import sharp from "sharp";
 
+
+
 const { values, positionals } = parseArgs({
     args: Bun.argv,
     options: {
@@ -40,6 +42,14 @@ if (positionals[2] === 'gen-types') {
 
 else if (positionals[2] === 'gen-code') {
     try {
+        const test = await import("sharp");
+    } catch (e) {
+        console.log("Module sharp not added as peer dependency in your system. This cli tool will not work without.")
+    }
+
+    try {
+        const sharp = (await import("sharp")).default;
+
         const args = {
             clientName: values.clientName,
             sourceFile: positionals[3],
