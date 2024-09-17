@@ -26,6 +26,7 @@ If `DEST_FILE` is not specified a `comfy-types.ts` file will be generated locall
 bunx comfybun gen-code SOURCE_IMAGE DEST_FILE --clientName=comfy
 ```
 
+It requires the optional peer dependency `sharp` to be available, (or installed globally).  
 `DEST_FILE` is optional, if missing the source name with `.ts` will be used.  
 `clientName` is also optional and it assumes `comfy` as the default client name.  
 If `raw` is set true only the list of nodes is generated, else (default) more opinionated boilerplate will be added.

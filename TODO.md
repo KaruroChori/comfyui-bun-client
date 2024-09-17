@@ -1,17 +1,10 @@
 # Upcoming
 
-## Needed for release 0.2.15
-
-- [x] New job interface to be more flexible
-  - [x] Rework the legacy one just not to break code and use the new version.
-  - [x] Upload and collect streams/buffer, not just files.
-- [x] ~~Optional support to add/strip metadata in the final artifacts if so desired.~~ superceeded
-  - [x] ~~Add arg to manually opt in~~ superceeded
-  - [x] Move from exifreader to sharp as the former does not support writing/deleting exif et similia.
-- [x] Generate more of the boilerplate during code gen.
-
 ## Needed for release 0.2.17
 
+- [ ] Document the new `job` interface.
+  - [ ] Move tests to this interface.
+  - [ ] Move examples to this interface.
 - [ ] Companion plugin for Comfy to simplify testing.
   - [ ] Wait node, to simulate long computation. Needed for some time sensitive testing
   - [ ] A self-contained output node just to verify workflows are working
@@ -28,6 +21,17 @@
 - [ ] Add support for client-side certificates to authorize the connection with comfyui (needed for some semi-public configurations)
 
 # Older releases
+
+## Needed for release 0.2.15
+
+- [x] New job interface to be more flexible
+  - [x] Rework the legacy one just not to break code and use the new version.
+  - [x] Upload and collect streams/buffer, not just files.
+  - [x] Deprecated the old `schedule_job`.
+- [x] ~~Optional support to add/strip metadata in the final artifacts if so desired.~~ superceeded
+  - [x] ~~Add arg to manually opt in~~ superceeded
+  - [x] Move from exifreader to sharp as the former does not support writing/deleting exif et similia.
+- [x] Generate more of the boilerplate during code gen.
 
 ## Needed for release 0.2.13
 

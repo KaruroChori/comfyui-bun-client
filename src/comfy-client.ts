@@ -694,7 +694,7 @@ export class ComfyClient {
                 if (status !== 'building') throw Error("Job upload resources outside building");
                 for (const file of infiles) {
                     const tmp = (file.mask ?? true) ?
-                        await parent.upload_image(file.from, { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' }) :
+                        await parent.upload_image(BunFileToFile(file.from, file.to ? basename(file.to) : undefined), { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' }) :
                         undefined
                     if (parent.#debug) console.log(`Loaded ${file.from}`, tmp)
                 }
@@ -702,7 +702,7 @@ export class ComfyClient {
             },
 
 
-            //Upload files to the backend
+            //Upload files from filenames to the backend
             async upload_from_files(infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
             ) {
                 if (status !== 'building') throw Error("Job upload resources outside building");
@@ -746,7 +746,7 @@ export class ComfyClient {
                 return ret;
             },
 
-            //Get files back from the backend
+            //Get and save files back from the backend
             async collect_to_files(outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string }[],
             ) {
                 if (status !== 'completed') throw Error("Job collection requested before completion");
