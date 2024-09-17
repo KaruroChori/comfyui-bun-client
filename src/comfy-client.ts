@@ -587,13 +587,13 @@ export class ComfyClient {
         await (await tmp
             .onStart(cb.onStart)
             .onCompleted(async () => {
-                await tmp.collect_files(outfiles)
+                await tmp.collect_to_files(outfiles)
                 if (cb.onCompleted) return cb.onCompleted();
             })
             .onCancelled(cb.onCancelled)
             .onUpdate(cb.onUpdate)
             .onError(cb.onError)
-            .upload_files(infiles)).schedule()
+            .upload_from_files(infiles)).schedule()
         return tmp;
     }
 
@@ -688,8 +688,22 @@ export class ComfyClient {
                 return this;
             },
 
+            //Upload blobs to the backend
+            async upload(infiles: { from: Blob; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
+            ) {
+                if (status !== 'building') throw Error("Job upload resources outside building");
+                for (const file of infiles) {
+                    const tmp = (file.mask ?? true) ?
+                        await parent.upload_image(file.from, { overwrite: true, subfolder: file.to ? dirname(file.to) : undefined, type: (file.tmp ?? true) ? 'temp' : 'input' }) :
+                        undefined
+                    if (parent.#debug) console.log(`Loaded ${file.from}`, tmp)
+                }
+                return this;
+            },
+
+
             //Upload files to the backend
-            async upload_files(infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
+            async upload_from_files(infiles: { from: string; to?: string; original?: string, tmp?: boolean; mask?: boolean }[],
             ) {
                 if (status !== 'building') throw Error("Job upload resources outside building");
                 for (const file of infiles) {
@@ -701,8 +715,39 @@ export class ComfyClient {
                 return this;
             },
 
+            /**
+             * Collect blobs from ComfyUI after a job has finished.
+             * @param outfiles Schema for the dictionary of blobs to collect.
+             * @returns 
+             */
+            async collect(outfiles: {
+                from: number,
+                to: string,
+            }[]) {
+                if (status !== 'completed') throw Error("Job collection requested before completion");
+                const ret: Record<string, Blob[]> = {}
+                for (const file of outfiles) {
+                    //Recover all artifacts from the server.
+                    const result = await parent.get_history(uid)
+                    const t = parent.#jobs.get(uid);
+                    ret[file.to] = []
+                    for (const [format, entries] of Object.entries(result[uid].outputs[file.from])) {
+                        const entires = entries as { filename: string, subfolder: string, type: ComfyResType }[];
+                        let i = 0;
+                        for (const [_, entry] of Object.entries(entires)) {
+                            const tmp = await parent.view(entry.filename, { subfolder: entry.subfolder, type: entry.type });
+                            ret[file.to].push(tmp)
+                            i++;
+                            if (parent.#debug) console.log(`Collected ${file.from}`, tmp);
+                        }
+                    }
+
+                }
+                return ret;
+            },
+
             //Get files back from the backend
-            async collect_files(outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string }[],
+            async collect_to_files(outfiles: { from: number; to: (x: number, filename?: string, format?: 'images' | 'latents') => string }[],
             ) {
                 if (status !== 'completed') throw Error("Job collection requested before completion");
                 for (const file of outfiles) {
