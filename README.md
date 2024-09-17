@@ -11,8 +11,8 @@ It is specifically designed for headless operations and automation. It features:
 - A mostly 1-to-1 wrapper for all the REST endpoints defined by ComfyUI.
 - An abstraction for **jobs** with customizable callbacks over their lifetime.
 - Utilities to simplify deployments, assets used for generation and the artifact collection.
-- (beta) A workflow builder, to generate new workflows directly in typescript with hints and static type checking.
-- (beta) A code generator that allows to take normal ComfyUI workflows and convert them into ts code.
+- A workflow builder, to generate new workflows directly in typescript with hints and static type checking.
+- A code generator that allows to take normal ComfyUI workflows and convert them into ts code.
 
 ## Quick start
 
@@ -20,7 +20,7 @@ To use `comfyui-bun-client` you just need to add it to your `package.json`.
 Make sure you are selecting the latest version available as this readme file might be outdated:
 
 ```sh
-bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.9
+bun add git+ssh://github.com/KaruroChori/comfyui-bun-client.git#v0.2.15
 ```
 
 There is no plan to distribute this package via `npm`. Any version which might pop up there is not endorsed.
@@ -39,7 +39,6 @@ import {ComfyClient} from "comfyui-bun-client"
 ```
 
 There is a small set of examples provided as part of this repository in `./examples/` to explore any more advanced usage.
-
 
 ### CLI tools
 
@@ -68,7 +67,6 @@ Feel free to send submissions, but please check the [README](./workflows/README.
 ### Run a full sequence of jobs
 
 [Check here](./docs/run-jobs.md).
-
 
 ## Information for developers
 
