@@ -16,7 +16,9 @@
     "bun": "1.1.18"
   },
   "devDependencies": {
-    "@types/bun": "^1.1.6"
+    "@types/bun": "^1.1.6",
+    "gh-pages": "^6.1.1",
+    "typedoc": "^0.26.7"
   },
   "peerDependencies": {
     "typescript": "^5.0.0",
@@ -29,5 +31,9 @@
   },
   "dependencies": {
     "@sinclair/typebox": "^0.32.35"
+  },
+  "scripts": {
+    "api-docs": "typedoc",
+    "deploy-api-docs": "gh-pages -d docs/api -e api -u \"github-actions-bot <support+actions@github.com>\""
   }
 }

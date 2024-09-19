@@ -1,0 +1,27 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Build
+        run: |
+          bun install
+          bun run api-docs
+      - name: Deploy
+        run: |
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          bun run deploy-api-docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

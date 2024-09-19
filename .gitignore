@@ -176,3 +176,6 @@ dist
 
 # Example artifacts
 /examples/tmp
+
+# Documentation
+/docs/api
