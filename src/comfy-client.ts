@@ -8,7 +8,6 @@ import { basename, dirname } from "node:path"
 import type { Static } from "@sinclair/typebox";
 import { WorkflowSchema } from "./comfy-types-base";
 import { Value } from "@sinclair/typebox/value";
-import sharp from "sharp";
 
 /**
  * States for a job to be in.

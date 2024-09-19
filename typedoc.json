@@ -1,7 +1,12 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["./index.ts"],
-  "exclude": ["./bin/*", "./examples/*", "./test/*", "./workflows/*"],
+  "exclude": [
+    "./bin/**/*",
+    "./examples/**/*",
+    "./test/**/*",
+    "./workflows/**/*"
+  ],
   "out": "docs/api",
   "readme": "none"
 }
