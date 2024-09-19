@@ -28,5 +28,11 @@
       "comfyui-bun-client/*": ["./*"],
       "comfyui-bun-client": ["./"]
     }
+  },
+  "include": ["./src/*", "./index.ts"],
+  "typedocOptions": {
+    "entryPoints": ["./index.ts"],
+    "out": "docs/api",
+    "readme": "none"
   }
 }

@@ -18,7 +18,8 @@
   "devDependencies": {
     "@types/bun": "^1.1.6",
     "gh-pages": "^6.1.1",
-    "typedoc": "^0.26.7"
+    "typedoc": "^0.26.7",
+    "sharp": "^0.33.5"
   },
   "peerDependencies": {
     "typescript": "^5.0.0",
@@ -33,7 +34,7 @@
     "@sinclair/typebox": "^0.32.35"
   },
   "scripts": {
-    "api-docs": "typedoc",
+    "api-docs": "typedoc --tsconfig ./tsconfig.doc.json",
     "deploy-api-docs": "gh-pages -d docs/api -e api -u \"github-actions-bot <support+actions@github.com>\""
   }
 }
