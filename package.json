@@ -35,6 +35,6 @@
   },
   "scripts": {
     "api-docs": "typedoc --tsconfig ./tsconfig.doc.json",
-    "deploy-api-docs": "gh-pages -d docs/api -e api -u \"github-actions-bot <support+actions@github.com>\""
+    "deploy-api-docs": "gh-pages -d docs/api -e . -u \"github-actions-bot <support+actions@github.com>\""
   }
 }
