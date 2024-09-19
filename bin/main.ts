@@ -1,9 +1,7 @@
 #!/bin/env bun
 import { parseArgs } from "node:util";
 import { ComfyClient, ComfyJSONToTypescript, GenerateTSFromJson } from "..";
-import ExifReader from 'exifreader';
 import wftmpl from './workflow-template'
-import sharp from "sharp";
 
 
 
