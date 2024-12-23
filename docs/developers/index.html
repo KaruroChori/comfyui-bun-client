@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Developers - comfy-bun</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Developers";
+        var mkdocs_page_input_path = "developers.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> comfy-bun
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../cli/">Cli</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../custom-workflows/">Custom workflows</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Developers</a>
+    <ul class="current">
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../run-jobs/">Run jobs</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">comfy-bun</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Developers</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/karurochori/comfy-bun-client/edit/master/docs/developers.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">#</a></h2>
+<p>You can start by cloning this repo and installing all the relevant dependencies.</p>
+<pre><code class="language-sh">git clone https://github.com/KaruroChori/comfyui-bun-client
+cd comfyui-bun-client
+bun install
+</code></pre>
+<p>The master branch is used to store the mainline in-dev version. Stable releases are defined by tags.
+As for versioning, the last number for any public release is odd. Even numbers are used internally during development only. For example <code>v0.1.6</code> is the in-dev version for <code>v0.1.7</code>.<br />
+Breaking changes are generally performed on major releases only <strong>after</strong> major 1. For <code>v0.x.x</code> every version might be breaking compatibility with the previous one.</p>
+<h2 id="test-suite">Test suite<a class="headerlink" href="#test-suite" title="Permanent link">#</a></h2>
+<p>To run the test suite, you need access to a compatible ComfyUI instance as backend.<br />
+<del>Only vanilla features are being used for testing, so there is no need to set it up with special extensions.</del>
+Right now <a href="https://registry.comfy.org/nodes/comfyui-crystools">crystools</a> is needed, as there is no good way to implement a basic workflow with base nodes.<br />
+My plan is to write a very small custom plugin for ComfyUI to specifically help with the testsuite.</p>
+<p>Its address should be set in the environment file <code>.env.test</code> under the variable <code>COMFY</code>.<br />
+Otherwise, it will default to <code>localhost:8188</code>.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<p>You can find several examples on how to use this library in <code>./examples</code>. If you want to add more, you are welcome.<br />
+However, examples requiring additional dependencies will not be accepted unless a separate local <code>package.json</code> file is provided.</p>
+<h2 id="linting">Linting<a class="headerlink" href="#linting" title="Permanent link">#</a></h2>
+<p><a href="https://biomejs.dev/linter/">Biome</a> is used as linter. A configuration file is provided in the root directory, and your editor is expected to run it <em>on save</em>.<br />
+At the very least, make sure to run it before a commit to master or PR is done.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../custom-workflows/" class="btn btn-neutral float-left" title="Custom workflows"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../run-jobs/" class="btn btn-neutral float-right" title="Run jobs">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/karurochori/comfy-bun-client" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../custom-workflows/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../run-jobs/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
