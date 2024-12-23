@@ -1,5 +1,5 @@
 site_name: comfy-bun
-repo_url: https://github.com/karurochori/comfy-bun-client
+repo_url: https://github.com/karurochori/comfyui-bun-client
 site_dir: dist/website/docs
 docs_dir: docs
 
