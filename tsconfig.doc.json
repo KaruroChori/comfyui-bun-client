@@ -32,7 +32,7 @@
   "include": ["./src/*", "./index.ts"],
   "typedocOptions": {
     "entryPoints": ["./index.ts"],
-    "out": "docs/api",
+    "out": "dist/website/api",
     "readme": "none"
   }
 }

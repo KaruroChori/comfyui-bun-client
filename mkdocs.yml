@@ -1,0 +1,19 @@
+site_name: comfy-bun
+repo_url: https://github.com/karurochori/comfy-bun-client
+site_dir: dist/website/docs
+docs_dir: docs
+
+theme:
+  name: readthedocs
+markdown_extensions:
+  - admonition
+  - pymdownx.tilde
+  - pymdownx.tasklist
+  - mdx_truly_sane_lists
+  - sane_lists
+  - smarty
+  - toc:
+      permalink: "#"
+plugins:
+  - search
+  - gh-admonitions

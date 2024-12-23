@@ -20,11 +20,19 @@ jobs:
           bun-version: latest
       - name: Build
         run: |
+          sudo apt install -y \
+            doxygen \
+            graphviz \
+            python3-pip \
+            python3-setuptools
+          python3 -m pip install mkdocs mkdocs-github-admonitions-plugin mkdocs-get-deps pymdown-extensions mdx_truly_sane_lists
+          bun install -g gh-pages
           bun install
           bun run api-docs
+          mkdocs build
       - name: Deploy
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          bun run deploy-api-docs
+          gh-pages -d dist/website -e . -u "github-actions-bot <support+actions@github.com>"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

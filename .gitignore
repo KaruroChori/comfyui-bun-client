@@ -118,7 +118,6 @@ out
 # Nuxt.js build / generate output
 
 .nuxt
-dist
 
 # Gatsby files
 
@@ -178,4 +177,7 @@ dist
 /examples/tmp
 
 # Documentation
-/docs/api
+/dist/*
+!/dist/website/
+/dist/website/api/*
+/dist/website/docs/*
